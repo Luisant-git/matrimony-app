@@ -1,0 +1,116 @@
+.success-page-container {
+    background-image: url('/assets/img/banner/banner-1.jpg'); /* Path to your image */
+    background-size: cover; /* Make the image cover the entire container */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Avoid repeating the image */
+    min-height: 100vh; /* Cover the full viewport height */
+    position: relative; /* For proper positioning of overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden; /* Prevent scrolling caused by the pseudo-element */
+  }
+  
+  .success-page-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: inherit; /* Use the same background image */
+    background-size: inherit;
+    background-position: inherit;
+    background-repeat: inherit;
+    filter: blur(19px) brightness(0); /* Blur and dim the background */
+    z-index: -1; /* Keep the overlay behind content */
+  }
+  
+  .success-card {
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white for the card */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    z-index: 1; /* Ensure card content is above background */
+    animation: fadeIn 0.8s ease-in-out; /* Smooth fade-in animation */
+  }
+  .icon-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .tick-icon {
+    font-size: 70px;
+    color: #FD4B65;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .loading-circle {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #FD4B65;
+    border-top: 4px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  .success-title {
+    color: #FD4B65;
+    margin-bottom: 20px;
+  }
+  
+  .success-message {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 20px;
+  }
+  
+  .home-button {
+    background-color: #FD4B65;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    padding: 10px;
+    transition: all 0.3s ease;
+    border: none;
+  }
+  
+  .home-button:hover {
+    background-color: #ff193c;
+    transform: scale(1.05);
+  }
+
+  .primary-text {
+    color: black;
+    font-family: Arial, sans-serif;
+  }
+
+  /* Apply red text color for secondary content */
+  .secondary-text {
+    color: red;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+  }
+
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  

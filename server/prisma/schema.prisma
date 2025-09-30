@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  SUPERADMIN
+}
+
+model Admin {
+  userId   String @id @default(uuid())
+  email    String @unique
+  password String
+  role     Role   @default(ADMIN)
+}
+
+model User {
+  userId         String     @id @default(uuid())
+  regNo          String     @unique
+  fullName       String
+  mobileNo       String     @unique
+  email          String     @unique
+  password       String
+  gender         Gender
+  dateOfBirth    String
+  state         String
+  district     String
+  address      String
+  profile        String
+  birthTime      String?
+  userProfile    String[] 
+  birthPlace     String?
+  education      String
+  job            String
+  job_type       String
+  organization   String?
+  height         Float?
+  weight         Float?
+  color          String?
+  income         Float?
+  kulam          String?
+  kothiram       String?
+  poorvigam      String?
+  maritalStatus  MaritalStatus
+  ownHouse       Boolean
+  siblings       Sibling[]
+  jathagam       Jathagam[]
+  casteId        String
+  caste          Caste      @relation(fields: [casteId], references: [casteId])
+  subCasteId        String
+  Sub_caste          Sub_caste     @relation(fields: [subCasteId], references: [subCasteId])
+  communityId    String
+  community      Community  @relation(fields: [communityId], references: [communityId])
+  kulamId    String
+  kulam_      Kulam  @relation(fields: [kulamId], references: [kulamId])
+  kothiramId    String
+  kothiram_    Kothiram  @relation(fields: [kothiramId], references: [kothiramId])
+  isActive       Boolean    @default(true)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  wishlists      Wishlist[]
+}
+model Wishlist {
+  wishlistId     String    @id @default(uuid())
+  userId         String   
+  userWishlistId String 
+  user           User      @relation(fields: [userId], references: [userId])
+  createdAt      DateTime  @default(now())
+   @@unique([userId, userWishlistId]) 
+}
+
+model registeration{
+  id         String     @id @default(uuid())
+  name      String
+  number    String
+  email     String
+  looking_For String
+  this_profile_for String
+  otp              String?  
+  isVerified Boolean @default(false)
+}
+model Community {
+  communityId   String  @id @default(uuid())
+  communityName String
+  users         User[]
+  caste         Caste[]
+}
+
+model Caste {
+  casteId   String  @id @default(uuid())
+  casteName String
+  communityId String
+  community Community @relation(fields: [communityId], references: [communityId])
+  users     User[]
+  subcaste Sub_caste[]
+}
+
+model Sub_caste{
+   subCasteId   String  @id @default(uuid())
+   SubCasteName  String
+  CasteId    String
+    users     User[]
+   subCaste    Caste  @relation(fields: [CasteId],references: [casteId])
+   kulam       Kulam[]
+}
+
+model Kulam {
+  kulamId     String       @id @default(uuid())
+  name        String
+  subCasteId  String?
+    users     User[]
+  porvikam    Sub_caste?  @relation(fields: [subCasteId], references: [subCasteId])
+  kothirams   Kothiram[]
+}
+
+model Kothiram {
+  kothiramId  String       @id @default(uuid())
+  name        String
+  kulamId     String
+    users     User[]
+  kulam       Kulam?     @relation(fields: [kulamId], references: [kulamId])
+
+}
+
+
+
+
+
+model Jathagam {
+  jathagamId String  @id @default(uuid())
+  rasi       String
+  uploadJathakam String     
+  natchathiram String
+  lagnam     String
+  dosham     String
+  userId     String  @unique
+  user       User    @relation(fields: [userId], references: [userId])
+}
+
+model Sibling {
+  siblingId  String  @id @default(uuid())
+  name       String
+  gender     Gender
+  userId     String
+  user       User    @relation(fields: [userId], references: [userId])
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum MaritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+}

@@ -1,0 +1,19 @@
+/* Sticky Job Search Section */
+.job-search-sticky {
+  position: fixed;
+  top: 0; /* Sticks at the top of the viewport */
+  z-index: 100; /* Ensures it stays above other content */
+  background-color: white; /* Avoids transparency issues */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow */
+  width: 25%; /* Matches column width */
+}
+
+/* Placeholder for Job Search */
+.job-search-placeholder {
+  height: 100%; /* Matches the height of the Job Search section */
+}
+
+/* Featured Jobs Margin */
+.featured-jobs {
+  margin-top: 20px;
+}
