@@ -28,11 +28,11 @@ const JobSearchHero = ({ resultsRef }) => {
   const dispatch = useDispatch();
   const currentPage = useSelector((state) => state.filteredResults.currentPage);
 
-console.log(currentPage);
-let page = currentPage?.toString();
+  console.log(currentPage);
+  let page = currentPage?.toString();
 
   console.log(page);
-  
+
   const handleCheckboxChange = (event, label) => {
     setNatchathiram((prev) => {
       const selectedValues = prev ? prev.split(",") : []; // Split the string into an array
@@ -84,9 +84,8 @@ let page = currentPage?.toString();
   const handleDrawerLak = () => {
     setDrawerOpenLak(!isDraweLak);
   };
-const[data,setdata]=useState([])
-console.log(data,"rea");
-
+  const [data, setdata] = useState([]);
+  console.log(data, "rea");
 
   // Fetch data on component load
   useEffect(() => {
@@ -135,8 +134,8 @@ console.log(data,"rea");
         natchathiram,
         dosham,
         lagnam: laknam,
-        page :'1',
-        pageSize :'6'
+        page: "1",
+        pageSize: "6",
       };
 
       try {
@@ -144,8 +143,8 @@ console.log(data,"rea");
           `${import.meta.env.VITE_API_URL}/user/filter`,
           { params }
         );
-        
-        setdata(res.data)
+
+        setdata(res.data);
         dispatch(setFilteredResults(res.data));
       } catch (err) {
         console.error("Error fetching filtered results:", err);
@@ -270,6 +269,39 @@ console.log(data,"rea");
             <div className="">
               <div className="p-3">
                 <Row>
+                  <Col className="mt-3" xl="12" lg="12" md="12" sm="12">
+                    <select
+                      required
+                      className="jm-candidates-search-select border "
+                      onChange={(e) => setGender(e.target.value)}
+                    >
+                      <option value="">பாலினம்</option>
+                      <option value="MALE">ஆண்</option>
+                      <option value="FEMALE">பெண்</option>
+                    </select>
+                  </Col>
+                  <Col xl="12" lg="12" md="12" sm="12" className="mt-2">
+                    <select
+                      required
+                      className="jm-candidates-search-select"
+                      onChange={(e) => setRasi(e.target.value)}
+                    >
+                      <option value="">ராசி தேர்வு செய்க</option>
+                      <option value="mesham">மேஷம்</option>
+                      <option value="rishabam">ரிஷபம்</option>
+                      <option value="mithunam">மிதுனம் </option>
+                      <option value="karakam">கரகம் </option>
+                      <option value="simam">சிம்மம் </option>
+                      <option value="kanni">கன்னி </option>
+                      <option value="thulam">துலாம் </option>
+                      <option value="viruchikam">விருச்சிகம்</option>
+                      <option value="dhanusu">தனுசு </option>
+                      <option value="makaram">மகரம் </option>
+                      <option value="kumbam">கும்பம் </option>
+                      <option value="meenam">மீனம் </option>
+                    </select>
+                  </Col>
+
                   <div className="accordion" id="natchathiramAccordion">
                     <div className="accordion-item ">
                       <h2 className="accordion-header" id="headingOne">
@@ -325,71 +357,6 @@ console.log(data,"rea");
                     </div>
                   </div>
 
-                  <div className="accordion" id="customAccordion mt-2">
-                    <div className="accordion-item mt-3">
-                      <h2 className="accordion-header" id="headingCustomOne">
-                        <button
-                          className="accordion-button collapsed"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#collapseCustomOne"
-                          aria-expanded="false"
-                          aria-controls="collapseCustomOne"
-                        >
-                          லக்னம் தேர்வு செய்க
-                        </button>
-                      </h2>
-                      <div
-                        id="collapseCustomOne"
-                        className="accordion-collapse collapse"
-                        aria-labelledby="headingCustomOne"
-                        data-bs-parent="#customAccordion"
-                      >
-                        <div className="accordion-body">
-                          <div className="dropdown">
-                            <div className="checkbox-row">
-                              <div className="checkbox-list">
-                                {doshamOptions.map((option) => (
-                                  <div
-                                    key={option.value}
-                                    className="checkbox-item"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      value={option.value}
-                                      id={`checkbox-${option.value}`}
-                                      className="custom-checkbox"
-                                      onChange={(e) =>
-                                        handleCheckboxChangedosam(
-                                          e,
-                                          option.value
-                                        )
-                                      }
-                                    />
-                                    <label htmlFor={`checkbox-${option.value}`}>
-                                      {option.label}
-                                    </label>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <Col className="mt-3" xl="12" lg="12" md="12" sm="12">
-                    <select
-                      required
-                      className="jm-candidates-search-select border "
-                      onChange={(e) => setGender(e.target.value)}
-                    >
-                      <option value="">பாலினம்</option>
-                      <option value="MALE">ஆண்</option>
-                      <option value="FEMALE">பெண்</option>
-                    </select>
-                  </Col>
                   <Col xl="12" lg="12" md="12" sm="12">
                     <select
                       name="selectedCommunityId"
@@ -401,20 +368,6 @@ console.log(data,"rea");
                       {communitydata.map((m) => (
                         <option key={m.communityId} value={m.communityId}>
                           {m.communityName}
-                        </option>
-                      ))}
-                    </select>
-                  </Col>
-                  <Col xl="12" lg="12" md="12" sm="12">
-                    <select
-                      required
-                      className="jm-candidates-search-select"
-                      onChange={(e) => setSelectedCasteId(e.target.value)}
-                    >
-                      <option value="">ஜாதி தேர்வு செய்க</option>
-                      {filterCaste.map((m) => (
-                        <option key={m.casteId} value={m.casteId}>
-                          {m.casteName}
                         </option>
                       ))}
                     </select>
@@ -460,28 +413,6 @@ console.log(data,"rea");
                       ))}
                     </select>
                   </Col>
-                  <Col xl="12" lg="12" md="12" sm="12" className="mt-2">
-                    <select
-                      required
-                      className="jm-candidates-search-select"
-                      onChange={(e) => setRasi(e.target.value)}
-                    >
-                      <option value="">ராசி தேர்வு செய்க</option>
-                      <option value="mesham">மேஷம்</option>
-                      <option value="rishabam">ரிஷபம்</option>
-                      <option value="mithunam">மிதுனம் </option>
-                      <option value="karakam">கரகம் </option>
-                      <option value="simam">சிம்மம் </option>
-                      <option value="kanni">கன்னி </option>
-                      <option value="thulam">துலாம் </option>
-                      <option value="viruchikam">விருச்சிகம்</option>
-                      <option value="dhanusu">தனுசு </option>
-                      <option value="makaram">மகரம் </option>
-                      <option value="kumbam">கும்பம் </option>
-                      <option value="meenam">மீனம் </option>
-                    </select>
-                  </Col>
-
                   <Col xl="12" lg="12" md="12" sm="12">
                     <select
                       required
@@ -495,6 +426,74 @@ console.log(data,"rea");
                       ))}
                     </select>
                   </Col>
+
+                  <div className="accordion" id="customAccordion mt-2">
+                    <div className="accordion-item mt-3">
+                      <h2 className="accordion-header" id="headingCustomOne">
+                        <button
+                          className="accordion-button collapsed"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#collapseCustomOne"
+                          aria-expanded="false"
+                          aria-controls="collapseCustomOne"
+                        >
+                          தோஷம் தேர்வு செய்க
+                        </button>
+                      </h2>
+                      <div
+                        id="collapseCustomOne"
+                        className="accordion-collapse collapse"
+                        aria-labelledby="headingCustomOne"
+                        data-bs-parent="#customAccordion"
+                      >
+                        <div className="accordion-body">
+                          <div className="dropdown">
+                            <div className="checkbox-row">
+                              <div className="checkbox-list">
+                                {doshamOptions.map((option) => (
+                                  <div
+                                    key={option.value}
+                                    className="checkbox-item"
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      value={option.value}
+                                      id={`checkbox-${option.value}`}
+                                      className="custom-checkbox"
+                                      onChange={(e) =>
+                                        handleCheckboxChangedosam(
+                                          e,
+                                          option.value
+                                        )
+                                      }
+                                    />
+                                    <label htmlFor={`checkbox-${option.value}`}>
+                                      {option.label}
+                                    </label>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* <Col xl="12" lg="12" md="12" sm="12">
+                    <select
+                      required
+                      className="jm-candidates-search-select"
+                      onChange={(e) => setSelectedCasteId(e.target.value)}
+                    >
+                      <option value="">ஜாதி தேர்வு செய்க</option>
+                      {filterCaste.map((m) => (
+                        <option key={m.casteId} value={m.casteId}>
+                          {m.casteName}
+                        </option>
+                      ))}
+                    </select>
+                  </Col> */}
                 </Row>
               </div>
             </div>
@@ -503,7 +502,7 @@ console.log(data,"rea");
       </div>
 
       <div className="mobile-filter text-center bg-light  fixed-filter">
-        <div style={{overflow:'auto'}}>
+        <div style={{ overflow: "auto" }}>
           <div className="filter-container p-2">
             <button onClick={handleDrawerdhosam} className="button">
               <FaSort className="icon" />
@@ -616,6 +615,7 @@ console.log(data,"rea");
                   ))}
                 </select>
               </Col>
+
               <Col xl="12" lg="12" md="6" sm="6">
                 <select
                   required

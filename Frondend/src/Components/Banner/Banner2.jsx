@@ -131,75 +131,75 @@ const Banner2 = ({ resultsRef }) => {
           {!logged && (
             <div className="jm-candidates-search-wrapper-inner-flex bg-light rounded col-md-6 col-12 bg-light rounded p-lg-4 p-sm-0 p-md-3 col-xl-6 col-lg-12 col-md-12 mb-sm-5 mb-5 mt-5">
               <div className="jm-candidates-search-wrapper-inner-input-fields px-1 py-2">
-                <h5>இங்கு பதிவு செய்யவும்</h5>
+                <h5>Register Here / இங்கு பதிவு செய்யவும்</h5>
                 <form onSubmit={handleRegistration}>
                   <Col xl="12" lg="12" md="12" sm="12">
                     <label className="form-label" htmlFor="">
-                      பெயர்
+                      Name / பெயர்
                     </label>
                     <input
                       className="border-danger"
                       type="text"
-                      placeholder="Enter Name"
+                      placeholder="Enter Name / பெயரை உள்ளிடவும்"
                       value={name}
                       onChange={(e) => handleChange(e, setName)}
                     />
                   </Col>
                   <Col xl="12" lg="12" md="12" sm="12">
                     <label className="form-label" htmlFor="">
-                      தொலைபேசி எண்
+                      Phone Number / தொலைபேசி எண்
                     </label>
                     <input
                       className="border-danger"
                       type="text"
-                      placeholder="Enter phone number"
+                      placeholder="Enter phone number / தொலைபேசி எண்ணை உள்ளிடவும்"
                       value={phone}
                       onChange={(e) => handleChange(e, setPhone)}
                     />
                   </Col>
                   <Col xl="12" lg="12" md="12" sm="12">
                     <label className="form-label" htmlFor="">
-                      மின்னஞ்சல்
+                      Email / மின்னஞ்சல்
                     </label>
                     <input
                       className="border-danger"
                       type="text"
-                      placeholder="Email(optional/(விருப்பம்))"
+                      placeholder="Email (optional) / மின்னஞ்சல் (விருப்பம்)"
                       value={email}
                       onChange={(e) => handleChange(e, setEmail)}
                     />
                   </Col>
                   <Col xl="12" lg="12" md="12" sm="12">
                     <label className="form-label" htmlFor="">
-                      நான் காண விரும்புவது
+                      Looking For / நான் காண விரும்புவது
                     </label>
                     <select
                       className="jm-candidates-search-select border-danger"
                       value={lookingFor}
                       onChange={(e) => handleChange(e, setLookingFor)}
                     >
-                      <option>Choose Type</option>
-                      <option>ஆண்</option>
-                      <option>பெண்</option>
+                      <option>Choose Type / வகையைத் தேர்ந்தெடுக்கவும்</option>
+                      <option>Male / ஆண்</option>
+                      <option>Female / பெண்</option>
                     </select>
                   </Col>
                   <Col xl="12" lg="12" md="12" sm="12">
                     <label className="form-label" htmlFor="">
-                      இந்த சுயவிவரம் யாருக்காக
+                      This Profile For / இந்த சுயவிவரம் யாருக்காக
                     </label>
                     <select
                       className="jm-candidates-search-select border-danger"
                       value={profileFor}
                       onChange={(e) => handleChange(e, setProfileFor)}
                     >
-                      <option>Choose Type</option>
-                      <option>எனக்காக</option>
-                      <option>என் மகனுக்காக</option>
-                      <option>என் மகளுக்காக</option>
-                      <option>என் சகோதரனுக்காக</option>
-                      <option>என் சகோதரிக்காக</option>
-                      <option>என் நண்பருக்காக</option>
-                      <option>என் உறவினர்களுக்காக</option>
+                      <option>Choose Type / வகையைத் தேர்ந்தெடுக்கவும்</option>
+                      <option>For Me / எனக்காக</option>
+                      <option>For My Son / என் மகனுக்காக</option>
+                      <option>For My Daughter / என் மகளுக்காக</option>
+                      <option>For My Brother / என் சகோதரனுக்காக</option>
+                      <option>For My Sister / என் சகோதரிக்காக</option>
+                      <option>For My Friend / என் நண்பருக்காக</option>
+                      <option>For My Relative / என் உறவினர்களுக்காக</option>
                     </select>
                   </Col>
 
@@ -215,7 +215,7 @@ const Banner2 = ({ resultsRef }) => {
                     <input
                       className="border-danger"
                       type="text"
-                      placeholder="Enter Captcha"
+                      placeholder="Enter Captcha / கேப்ட்சாவை உள்ளிடவும்"
                       value={captchaInput}
                       onChange={(e) => setCaptchaInput(e.target.value)}
                     />
@@ -228,9 +228,9 @@ const Banner2 = ({ resultsRef }) => {
                         checked={isAgreed}
                         onChange={(e) => setIsAgreed(e.target.checked)}
                       />
-                      I agree to the Terms and Conditions{" "}
+                      I agree to the Terms and Conditions / நான் விதிமுறைகள் மற்றும் நிபந்தனைகளை ஏற்றுக்கொள்கிறேன்{" "}
                       <span className="text-danger" onClick={handleShow}>
-                        click to view
+                        click to view / பார்க்க கிளிக் செய்யவும்
                       </span>
                     </Col>
                   </Col>
@@ -246,7 +246,7 @@ const Banner2 = ({ resultsRef }) => {
                       type="submit"
                       className="jm-banner-layout-2-btn mt-25 btn w-100"
                     >
-                      Get Started{" "}
+                      Get Started / தொடங்கவும்{" "}
                       <i className="fa-thin fa-arrow-right-long"></i>
                     </button>
                   </Col>
