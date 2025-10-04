@@ -24,9 +24,16 @@ export class WishlistController {
   }
 
   @Delete(':wishlistId')
-  @ApiOperation({ summary: 'Remove an item from the wishlist' })
+  @ApiOperation({ summary: 'Remove an item from the wishlist by ID' })
   @ApiResponse({ status: 200, description: 'Item removed from wishlist' })
   async deleteWishlist(@Param('wishlistId') wishlistId: string) {
     return await this.wishlistService.deleteWishlist(wishlistId);
+  }
+
+  @Delete()
+  @ApiOperation({ summary: 'Remove an item from the wishlist by userId and profileId' })
+  @ApiResponse({ status: 200, description: 'Item removed from wishlist' })
+  async removeFromWishlist(@Body() body: { userId: string; profileId: string }) {
+    return await this.wishlistService.removeFromWishlist(body.userId, body.profileId);
   }
 }

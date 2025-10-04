@@ -50,7 +50,7 @@ function ModalSubCaste({ setSubCasteModal, subcasteModal,setRefresh ,refresh,cas
             </div>
             <div className="mb-3">
               <CFormSelect onChange={(e) => setcasteId(e.target.value)} name="dosham">
-                <option value="">Select Porvikam</option>
+                <option value="">Select Caste</option>
                 {casteData.map((m) => (
                   <option key={m.casteId} value={m.casteId}>
                     {m.casteName}

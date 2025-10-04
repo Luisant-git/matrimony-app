@@ -6,7 +6,7 @@ export class CreateWishlistDto {
   @IsString()
   userId: string;
 
-  @ApiProperty({ description: 'A unique identifier for the user wishlist item' })
+  @ApiProperty({ description: 'The profile ID to add to wishlist' })
   @IsString()
-  userWishlistId: string;
+  profileId: string;
 }
