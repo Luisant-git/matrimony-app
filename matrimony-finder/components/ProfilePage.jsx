@@ -580,7 +580,7 @@ const ProfilePage = ({ selectedUserId, onNavigateToLogin }) => {
           onClick={() => setLightboxOpen(false)}
         >
           <div
-            className="relative max-w-[95%] max-h-[95%]"
+            className="relative flex items-center justify-center w-[100vw] md:w-[900px] h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -589,11 +589,13 @@ const ProfilePage = ({ selectedUserId, onNavigateToLogin }) => {
             >
               ×
             </button>
-            <img
-              src={lightboxImage}
-              alt="Full"
-              className="max-w-full max-h-[80vh] rounded"
-            />
+            <div className="w-full h-full flex items-center justify-center bg-black/20 rounded">
+              <img
+                src={lightboxImage}
+                alt="Full"
+                className="max-w-full max-h-full object-contain rounded"
+              />
+            </div>
           </div>
         </div>
       )}
