@@ -40,6 +40,9 @@ function FormAdd({
   kulamData,
   kothirams,
   casteData,
+  removeProfileImage,
+  editJathagam,
+  deleteJathagam,
 }) {
   const [communitymodal, setCommunityModal] = useState(false)
   const [casteModal, setCasteModal] = useState(false)
@@ -109,12 +112,29 @@ function FormAdd({
               {profileImages.length > 0 && (
                 <div className="mt-2 d-flex flex-wrap">
                   {profileImages.map((image, index) => (
-                    <img
+                    <div
                       key={index}
-                      src={image}
-                      alt={`Profile Preview ${index + 1}`}
-                      style={{ width: 100, height: 100, objectFit: 'cover', margin: 5 }}
-                    />
+                      style={{ position: 'relative', width: 100, height: 100, margin: 5 }}
+                    >
+                      <img
+                        src={image}
+                        alt={`Profile Preview ${index + 1}`}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          borderRadius: 4,
+                        }}
+                      />
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-danger"
+                        style={{ position: 'absolute', top: 4, right: 4, padding: '2px 6px' }}
+                        onClick={() => removeProfileImage && removeProfileImage(index)}
+                      >
+                        X
+                      </button>
+                    </div>
                   ))}
                 </div>
               )}
@@ -172,8 +192,7 @@ function FormAdd({
               <CFormInput
                 required
                 type="text"
-              
-                name='birthPlace'
+                name="birthPlace"
                 value={formData.birthPlace}
                 onChange={handleChange}
                 id="birthPlace"
@@ -547,6 +566,15 @@ function FormAdd({
                       <CListGroupItem>
                         <strong>Uploaded Jathakam:</strong> {item.uploadJathakam}
                       </CListGroupItem>
+                      <CListGroupItem className="d-flex gap-2">
+                        <CButton
+                          color="warning"
+                          size="sm"
+                          onClick={() => editJathagam && editJathagam(index)}
+                        >
+                          Edit
+                        </CButton>
+                      </CListGroupItem>
                     </CListGroup>
                   ))
                 ) : (
@@ -580,12 +608,12 @@ function FormAdd({
         subCasteData={subCasteData}
       />
 
-      <ModalKothiram 
-       refresh={refresh}
-       setRefresh={setRefresh}
-       setKothirammModal={setKothirammModal}
-       kothiramModal={kothiramModal}
-       kulamData={kulamData}
+      <ModalKothiram
+        refresh={refresh}
+        setRefresh={setRefresh}
+        setKothirammModal={setKothirammModal}
+        kothiramModal={kothiramModal}
+        kulamData={kulamData}
       />
 
       <ModalCommunity

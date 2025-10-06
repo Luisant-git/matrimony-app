@@ -1,6 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 import { LoginDto } from './dto/login.dto';
 import { Gender } from '@prisma/client';
@@ -30,7 +40,7 @@ export class UserController {
 
   @Patch('data/:id')
   @ApiOperation({ summary: 'Update a user by ID' })
-  update(@Param('id') id: string, @Body() updateUserDto: CreateUserDto) {
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
 
@@ -80,8 +90,10 @@ export class UserController {
     const pageNumber = parseInt(page, 10) || 1; // Default to 1 if parsing fails
     const pageSizeNumber = parseInt(pageSize, 10) || 10; // Default to 10 if parsing fails
     const doshamArray = dosham ? dosham.split(',') : undefined; // Convert to array
-    const natchathiramArray = natchathiram ? natchathiram.split(',') : undefined; // Convert to array
-    
+    const natchathiramArray = natchathiram
+      ? natchathiram.split(',')
+      : undefined; // Convert to array
+
     return this.userService.filterUsers({
       gender,
       communityId,
@@ -90,14 +102,11 @@ export class UserController {
       kulamId,
       kothiramId,
       lagnam,
-      dosham:doshamArray,
-      natchathiram:natchathiramArray,
+      dosham: doshamArray,
+      natchathiram: natchathiramArray,
       rasi,
       page: pageNumber,
       pageSize: pageSizeNumber,
     });
   }
-  
-  
-  
 }

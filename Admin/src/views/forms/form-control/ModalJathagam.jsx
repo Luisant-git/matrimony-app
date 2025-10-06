@@ -18,6 +18,7 @@ function ModalJathagam({
   modalVisibles,
   handleFileChange,
   handleFileChangedoc,
+  updateJathagam,
 }) {
   return (
     <div>
@@ -26,7 +27,12 @@ function ModalJathagam({
         <CModalBody>
           <CForm>
             <div className="mb-3">
-              <CFormSelect required name="rasi" value={newJathagam.rasi} onChange={handleInputChanges}>
+              <CFormSelect
+                required
+                name="rasi"
+                value={newJathagam.rasi}
+                onChange={handleInputChanges}
+              >
                 <option value="">Select Rasi</option>
                 <option value="mesham">மேஷம் (Mēṣam)</option>
                 <option value="rishabam">ரிஷபம் (Riṣabam)</option>
@@ -86,7 +92,12 @@ function ModalJathagam({
               </CFormSelect>
             </div>
             <div className="mb-3">
-              <CFormSelect name="lagnam" required value={newJathagam.lagnam} onChange={handleInputChanges}>
+              <CFormSelect
+                name="lagnam"
+                required
+                value={newJathagam.lagnam}
+                onChange={handleInputChanges}
+              >
                 <option value="">Select Lagnam</option>
                 <option value="ashwini">அஸ்வினி (Asvini)</option>
                 <option value="bharani">பரணி (Bharani)</option>
@@ -118,35 +129,51 @@ function ModalJathagam({
               </CFormSelect>
             </div>
             <div className="mb-3">
-              <CFormSelect name="dosham" required value={newJathagam.dosham} onChange={handleInputChanges}>
+              <CFormSelect
+                name="dosham"
+                required
+                value={newJathagam.dosham}
+                onChange={handleInputChanges}
+              >
                 <option value="">Select Dosham</option>
-        
-                 
                 <option value="">தோஷம் தேர்வு செய்க</option>
-    <option value="ketu_dosham">கேது தோஷம்</option>
-    <option value="manglik_dosham">மாங்கலிக தோஷம்</option>
-    <option value="pitra_dosham">பித்ர தோஷம்</option>
-    <option value="nadi_dosham">நாதி தோஷம்</option>
-    <option value="kalathra_dosham">கலத்ர தோஷம்</option>
-    <option value="rahu_dosham">ராகு தோஷம்</option>
-    <option value="shani_dosham">சனி தோஷம்</option>
-    <option value="brahma_dosham">பிரம்மா தோஷம்</option>
-    <option value="yoni_dosham">யோனி தோஷம்</option>
-    <option value="chandra_dosham">சந்திர தோஷம்</option>
-    <option value="sarpadosham">சர்ப்ப தோஷம்</option> {/* Adding a common dosham */}
-    <option value="putra_dosham">புத்திர தோஷம்</option> {/* Another variant */}
-                   
+                <option value="ketu_dosham">கேது தோஷம்</option>
+                <option value="manglik_dosham">மாங்கலிக தோஷம்</option>
+                <option value="pitra_dosham">பித்ர தோஷம்</option>
+                <option value="nadi_dosham">நாதி தோஷம்</option>
+                <option value="kalathra_dosham">கலத்ர தோஷம்</option>
+                <option value="rahu_dosham">ராகு தோஷம்</option>
+                <option value="shani_dosham">சனி தோஷம்</option>
+                <option value="brahma_dosham">பிரம்மா தோஷம்</option>
+                <option value="yoni_dosham">யோனி தோஷம்</option>
+                <option value="chandra_dosham">சந்திர தோஷம்</option>
+                <option value="sarpadosham">சர்ப்ப தோஷம்</option> {/* Adding a common dosham */}
+                <option value="putra_dosham">புத்திர தோஷம்</option> {/* Another variant */}
               </CFormSelect>
             </div>
 
             <div className="mb-3">
               <label htmlFor="">Upload PDf ony</label>
-              <CFormInput required type="file" name="uploadJathakam" onChange={handleFileChangedoc} />
+              <CFormInput
+                required
+                type="file"
+                name="uploadJathakam"
+                onChange={handleFileChangedoc}
+              />
             </div>
           </CForm>
         </CModalBody>
         <CModalFooter>
-          <CButton color="primary" onClick={addJathagam}>
+          <CButton
+            color="primary"
+            onClick={() => {
+              if (newJathagam && newJathagam._editingIndex !== undefined && updateJathagam) {
+                updateJathagam(newJathagam._editingIndex, newJathagam)
+              } else {
+                addJathagam()
+              }
+            }}
+          >
             Save
           </CButton>
           <CButton color="secondary" onClick={() => setModalVisibles(false)}>

@@ -7,8 +7,8 @@ import ModalJathagam from './ModalJathagam'
 import ModalSibilings from './ModalSibilings'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 const Update_form = () => {
   const [profileImage, setProfileImage] = useState(null)
   const [refresh, setRefresh] = useState(false)
@@ -16,21 +16,21 @@ const Update_form = () => {
   const [profileImages, setProfileImages] = useState([])
   const [uploadImgs, setUploadImgs] = useState([])
 
-  const { id } = useParams();
-  const [userData, setUserData] = useState(null); // State to store fetched data
-  const [error, setError] = useState(null); // State to store error messages
-const navigate=useNavigate()
+  const { id } = useParams()
+  const [userData, setUserData] = useState(null) // State to store fetched data
+  const [error, setError] = useState(null) // State to store error messages
+  const navigate = useNavigate()
   useEffect(() => {
     // Fetch data when component mounts
     fetch(`${import.meta.env.VITE_API_URL}/user/data/${id}`)
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Failed to fetch data');
+          throw new Error('Failed to fetch data')
         }
-        return response.json();
+        return response.json()
       })
       .then((data) => {
-        setUserData(data);
+        setUserData(data)
         setFormData(data)
         setJathagam(data?.jathagam)
         setSiblings(data?.siblings)
@@ -38,12 +38,11 @@ const navigate=useNavigate()
         // setLoading(false);
       })
       .catch((error) => {
-        setError(error.message);
+        setError(error.message)
         // setLoading(false);
-      });
-  }, []);
-  
-  
+      })
+  }, [])
+
   const handleImageChange = (event) => {
     const files = Array.from(event.target.files) // Convert FileList to Array
     const imagePreviews = []
@@ -64,6 +63,15 @@ const navigate=useNavigate()
     })
 
     setUploadImgs((prev) => [...prev, ...uploadedFiles])
+  }
+
+  const removeProfileImage = (indexToRemove) => {
+    setProfileImages((prev) => prev.filter((_, i) => i !== indexToRemove))
+    setUploadImgs((prev) => prev.filter((_, i) => i !== indexToRemove))
+    setFormData((prev) => ({
+      ...prev,
+      userProfile: (prev.userProfile || []).filter((_, i) => i !== indexToRemove),
+    }))
   }
   const [siblings, setSiblings] = useState([])
   const [modalVisible, setModalVisible] = useState(false)
@@ -192,6 +200,55 @@ const navigate=useNavigate()
     }
   }
 
+  const editJathagam = (index) => {
+    const item = jathagam?.[index]
+    if (!item) return
+    setNewJathagam({
+      rasi: item.rasi || '',
+      uploadJathakam: item.uploadJathakam || null,
+      natchathiram: item.natchathiram || '',
+      lagnam: item.lagnam || '',
+      dosham: item.dosham || '',
+      _editingIndex: index,
+    })
+    setModalVisibles(true)
+  }
+
+  const deleteJathagam = (index) => {
+    setJathagam((prev) => {
+      const updated = prev ? prev.filter((_, i) => i !== index) : []
+      setFormData((fd) => ({ ...fd, jathagam: updated }))
+      return updated
+    })
+  }
+
+  const updateJathagam = async (index, updatedData) => {
+    try {
+      let uploadUrl = updatedData.uploadJathakam
+
+      if (selectedFiles && selectedFiles.length > 0) {
+        const uploadedJathagamUrl = await handleUploadJathagam()
+        uploadUrl = uploadedJathagamUrl || uploadUrl
+      }
+
+      const finalData = { ...updatedData, uploadJathakam: uploadUrl }
+
+      setJathagam((prev) => {
+        const copy = prev ? [...prev] : []
+        copy[index] = { ...copy[index], ...finalData }
+        setFormData((fd) => ({ ...fd, jathagam: copy }))
+        return copy
+      })
+
+      setModalVisibles(false)
+      setSelectedFiles(null)
+      setNewJathagam((prev) => ({ ...prev, _editingIndex: undefined }))
+    } catch (error) {
+      console.error('Error updating jathagam:', error)
+      alert('Failed to update Jathagam. Please try again.')
+    }
+  }
+
   const [formData, setFormData] = useState({
     regNo: '',
     fullName: '',
@@ -215,12 +272,12 @@ const navigate=useNavigate()
     income: 0,
     maritalStatus: 'SINGLE',
     ownHouse: true,
-    poorvigam:"",
-    kulamId:'',
-    kothiramId:'',
-    subCasteId:'',
-    kothiram :'',
-    kulam:"",
+    poorvigam: '',
+    kulamId: '',
+    kothiramId: '',
+    subCasteId: '',
+    kothiram: '',
+    kulam: '',
     casteId: '',
     communityId: '',
     job_type: '',
@@ -283,9 +340,12 @@ const navigate=useNavigate()
 
       console.log(submissionData, 'summiuted')
 
-      const response = await axios.patch(`${import.meta.env.VITE_API_URL}/user/data/${id}`, submissionData)
+      const response = await axios.patch(
+        `${import.meta.env.VITE_API_URL}/user/data/${id}`,
+        submissionData,
+      )
       console.log('Response:', response.data)
-    
+
       toast.success('Registration User successful!')
       setFormData({
         regNo: '',
@@ -306,9 +366,9 @@ const navigate=useNavigate()
         organization: '',
         height: 0,
         weight: 0,
-        poorvigam:'',
-        kothiram :'',
-        kulam:'',
+        poorvigam: '',
+        kothiram: '',
+        kulam: '',
         color: '',
         profile: '',
         income: 0,
@@ -343,7 +403,6 @@ const navigate=useNavigate()
     }
   }
 
-
   useEffect(() => {
     axios.get(`${import.meta.env.VITE_API_URL}/community`).then((res) => {
       setCommunityData(res.data)
@@ -370,14 +429,11 @@ const navigate=useNavigate()
     })
   }, [refresh])
 
-
   const filterdatacast = casteData.filter((m) => m.communityId === formData.communityId)
-  const filterdatasubcaste=subCasteData.filter((m)=>m.CasteId===formData.casteId)
-  const filterdatakulam=kulamData.filter((m)=>m.subCasteId===formData.subCasteId)
-  const filterdatakothiram=kothirams.filter((m)=>m.kulamId===formData.kulamId)
+  const filterdatasubcaste = subCasteData.filter((m) => m.CasteId === formData.casteId)
+  const filterdatakulam = kulamData.filter((m) => m.subCasteId === formData.subCasteId)
+  const filterdatakothiram = kothirams.filter((m) => m.kulamId === formData.kulamId)
 
-
-  
   return (
     <CRow>
       <CCol xs={12}>
@@ -405,7 +461,9 @@ const navigate=useNavigate()
             kulamData={kulamData}
             subCasteData={subCasteData}
             casteData={casteData}
-            
+            removeProfileImage={removeProfileImage}
+            editJathagam={editJathagam}
+            deleteJathagam={deleteJathagam}
           />
         </CCard>
 
@@ -424,6 +482,7 @@ const navigate=useNavigate()
           handleInputChanges={handleInputChanges}
           newJathagam={newJathagam}
           handleFileChangedoc={handleFileChangedoc}
+          updateJathagam={updateJathagam}
         />
       </CCol>
       <ToastContainer />

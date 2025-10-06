@@ -47,6 +47,15 @@ const FormControl = () => {
 
     setUploadImgs((prev) => [...prev, ...uploadedFiles])
   }
+  const removeProfileImage = (indexToRemove) => {
+    setProfileImages((prev) => prev.filter((_, i) => i !== indexToRemove))
+    setUploadImgs((prev) => prev.filter((_, i) => i !== indexToRemove))
+    // Also update formData.userProfile if needed
+    setFormData((prev) => ({
+      ...prev,
+      userProfile: (prev.userProfile || []).filter((_, i) => i !== indexToRemove),
+    }))
+  }
   const [siblings, setSiblings] = useState([])
   const [modalVisible, setModalVisible] = useState(false)
   const [newSibling, setNewSibling] = useState({
@@ -174,6 +183,59 @@ const FormControl = () => {
     }
   }
 
+  // Edit and delete handlers for jathagam
+  const editJathagam = (index) => {
+    const item = jathagam?.[index]
+    if (!item) return
+    setNewJathagam({
+      rasi: item.rasi || '',
+      uploadJathakam: item.uploadJathakam || null,
+      natchathiram: item.natchathiram || '',
+      lagnam: item.lagnam || '',
+      dosham: item.dosham || '',
+    })
+    setModalVisibles(true)
+    // store index on newJathagam to know update target
+    setNewJathagam((prev) => ({ ...prev, _editingIndex: index }))
+  }
+
+  const deleteJathagam = (index) => {
+    setJathagam((prev) => {
+      const updated = prev ? prev.filter((_, i) => i !== index) : []
+      setFormData((fd) => ({ ...fd, jathagam: updated }))
+      return updated
+    })
+  }
+
+  const updateJathagam = async (index, updatedData) => {
+    try {
+      let uploadUrl = updatedData.uploadJathakam
+
+      // If user selected new files via modal, selectedFiles will be set — upload them
+      if (selectedFiles && selectedFiles.length > 0) {
+        const uploadedJathagamUrl = await handleUploadJathagam()
+        uploadUrl = uploadedJathagamUrl || uploadUrl
+      }
+
+      const finalData = { ...updatedData, uploadJathakam: uploadUrl }
+
+      setJathagam((prev) => {
+        const copy = prev ? [...prev] : []
+        copy[index] = { ...copy[index], ...finalData }
+        setFormData((fd) => ({ ...fd, jathagam: copy }))
+        return copy
+      })
+
+      // cleanup
+      setModalVisibles(false)
+      setSelectedFiles(null)
+      setNewJathagam((prev) => ({ ...prev, _editingIndex: undefined }))
+    } catch (error) {
+      console.error('Error updating jathagam:', error)
+      alert('Failed to update Jathagam. Please try again.')
+    }
+  }
+
   const [formData, setFormData] = useState({
     regNo: '',
     fullName: '',
@@ -197,12 +259,12 @@ const FormControl = () => {
     income: 0,
     maritalStatus: 'SINGLE',
     ownHouse: true,
-    poorvigam:"",
-    kulamId:'',
-    kothiramId:'',
-    subCasteId:'',
-    kothiram :'',
-    kulam:"",
+    poorvigam: '',
+    kulamId: '',
+    kothiramId: '',
+    subCasteId: '',
+    kothiram: '',
+    kulam: '',
     casteId: '',
     communityId: '',
     job_type: '',
@@ -248,8 +310,8 @@ const FormControl = () => {
   }
 
   const sendEmail = async (to, username, code) => {
-    const baseURL = `${import.meta.env.VITE_API_URL}/mail/send-email`;
-  
+    const baseURL = `${import.meta.env.VITE_API_URL}/mail/send-email`
+
     try {
       const response = await axios.get(baseURL, {
         params: {
@@ -257,17 +319,17 @@ const FormControl = () => {
           username,
           code,
         },
-      });
-  
-      console.log("Email sent successfully:", response.data);
+      })
+
+      console.log('Email sent successfully:', response.data)
       toast.success('Email Sended successful!')
-      return response.data;
+      return response.data
     } catch (error) {
-      console.error("Error sending email:", error);
+      console.error('Error sending email:', error)
       toast.error('Error While Seinding mail')
-      throw error;
+      throw error
     }
-  };
+  }
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -278,7 +340,7 @@ const FormControl = () => {
       }
       const passwordFromEmail = formData.email.split('@')[0]
 
-      sendEmail(formData?.email,formData?.fullName,passwordFromEmail)
+      sendEmail(formData?.email, formData?.fullName, passwordFromEmail)
       const submissionData = {
         ...formData,
         userProfile: uploadedImageUrl,
@@ -310,9 +372,9 @@ const FormControl = () => {
         organization: '',
         height: 0,
         weight: 0,
-        poorvigam:'',
-        kothiram :'',
-        kulam:'',
+        poorvigam: '',
+        kothiram: '',
+        kulam: '',
         color: '',
         profile: '',
         income: 0,
@@ -372,14 +434,11 @@ const FormControl = () => {
     })
   }, [refresh])
 
-
   const filterdatacast = casteData.filter((m) => m.communityId === formData.communityId)
-  const filterdatasubcaste=subCasteData.filter((m)=>m.CasteId===formData.casteId)
-  const filterdatakulam=kulamData.filter((m)=>m.subCasteId===formData.subCasteId)
-  const filterdatakothiram=kothirams.filter((m)=>m.kulamId===formData.kulamId)
+  const filterdatasubcaste = subCasteData.filter((m) => m.CasteId === formData.casteId)
+  const filterdatakulam = kulamData.filter((m) => m.subCasteId === formData.subCasteId)
+  const filterdatakothiram = kothirams.filter((m) => m.kulamId === formData.kulamId)
 
-
-  
   return (
     <CRow>
       <CCol xs={12}>
@@ -407,7 +466,9 @@ const FormControl = () => {
             kulamData={kulamData}
             subCasteData={subCasteData}
             casteData={casteData}
-            
+            removeProfileImage={removeProfileImage}
+            editJathagam={editJathagam}
+            deleteJathagam={deleteJathagam}
           />
         </CCard>
 
@@ -426,6 +487,7 @@ const FormControl = () => {
           handleInputChanges={handleInputChanges}
           newJathagam={newJathagam}
           handleFileChangedoc={handleFileChangedoc}
+          updateJathagam={updateJathagam}
         />
       </CCol>
       <ToastContainer />
