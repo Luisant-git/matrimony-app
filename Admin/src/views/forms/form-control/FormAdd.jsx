@@ -264,7 +264,8 @@ function FormAdd({
                 value={formData.height}
                 required
                 onChange={handleChange}
-                type="text"
+                type="number"
+                step="0.1"
                 id="height"
                 placeholder="Enter your height (e.g., 5.5)"
               />
@@ -278,7 +279,8 @@ function FormAdd({
                 value={formData.weight}
                 required
                 onChange={handleChange}
-                type="text"
+                type="number"
+                step="0.1"
                 id="weight"
                 placeholder="Enter your weight in KG (e.g., 65.5)"
               />

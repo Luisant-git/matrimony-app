@@ -289,13 +289,14 @@ const Update_form = () => {
     const { name, value } = e.target
     setFormData({
       ...formData,
-
       [name]:
         name === 'ownHouse'
           ? value === 'true'
-          : ['height', 'weight', 'income'].includes(name)
-            ? parseInt(value, 10) || 0
-            : value,
+          : ['height', 'weight'].includes(name)
+            ? parseFloat(value) || 0
+            : name === 'income'
+              ? parseInt(value, 10) || 0
+              : value,
     })
   }
   const handleImageUpload = async () => {
