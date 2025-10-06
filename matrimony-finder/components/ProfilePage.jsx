@@ -389,6 +389,9 @@ const ProfilePage = ({ selectedUserId, onNavigateToLogin }) => {
   const [isSaved, setIsSaved] = useState(false);
   const [saving, setSaving] = useState(false);
   const { user } = useAuth();
+  // Lightbox for full-screen image view
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -420,6 +423,15 @@ const ProfilePage = ({ selectedUserId, onNavigateToLogin }) => {
     };
     fetchUserData();
   }, [user, selectedUserId]);
+
+  // Close lightbox on Escape
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") setLightboxOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const handleSaveProfile = async () => {
     if (!user || !selectedUserId || saving || isSaved) return;
@@ -478,7 +490,11 @@ const ProfilePage = ({ selectedUserId, onNavigateToLogin }) => {
                       <img
                         src={userData.userProfile[0]}
                         alt="Profile main"
-                        className="w-full rounded-lg shadow-lg object-cover h-full max-h-[500px]"
+                        className="w-full rounded-lg shadow-lg object-cover h-full max-h-[500px] cursor-pointer"
+                        onClick={() => {
+                          setLightboxImage(userData.userProfile[0]);
+                          setLightboxOpen(true);
+                        }}
                       />
                     </div>
                     <div className="w-full md:w-1/3 flex md:flex-col gap-4">
@@ -486,14 +502,22 @@ const ProfilePage = ({ selectedUserId, onNavigateToLogin }) => {
                         <img
                           src={userData.userProfile[1]}
                           alt="Profile thumb 1"
-                          className="w-full h-1/2 object-cover rounded-lg shadow-lg"
+                          className="w-full h-1/2 object-cover rounded-lg shadow-lg cursor-pointer"
+                          onClick={() => {
+                            setLightboxImage(userData.userProfile[1]);
+                            setLightboxOpen(true);
+                          }}
                         />
                       )}
                       {userData.userProfile[2] && (
                         <img
                           src={userData.userProfile[2]}
                           alt="Profile thumb 2"
-                          className="w-full h-1/2 object-cover rounded-lg shadow-lg"
+                          className="w-full h-1/2 object-cover rounded-lg shadow-lg cursor-pointer"
+                          onClick={() => {
+                            setLightboxImage(userData.userProfile[2]);
+                            setLightboxOpen(true);
+                          }}
                         />
                       )}
                     </div>
@@ -505,7 +529,11 @@ const ProfilePage = ({ selectedUserId, onNavigateToLogin }) => {
                         key={index}
                         src={image}
                         alt={`Profile ${index + 1}`}
-                        className="w-full h-64 object-cover rounded-lg shadow-lg"
+                        className="w-full h-64 object-cover rounded-lg shadow-lg cursor-pointer"
+                        onClick={() => {
+                          setLightboxImage(image);
+                          setLightboxOpen(true);
+                        }}
                       />
                     ))}
                   </div>
@@ -545,6 +573,30 @@ const ProfilePage = ({ selectedUserId, onNavigateToLogin }) => {
           </div>
         </div>
       </div>
+      {/* Lightbox overlay */}
+      {lightboxOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+          onClick={() => setLightboxOpen(false)}
+        >
+          <div
+            className="relative max-w-[95%] max-h-[95%]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute right-0 top-0 m-2 text-white text-2xl bg-black/40 rounded-full p-1"
+              onClick={() => setLightboxOpen(false)}
+            >
+              ×
+            </button>
+            <img
+              src={lightboxImage}
+              alt="Full"
+              className="max-w-full max-h-[80vh] rounded"
+            />
+          </div>
+        </div>
+      )}
       <StatsBar />
     </>
   );
