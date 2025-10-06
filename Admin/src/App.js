@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { HashRouter, Route, Routes, Navigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
@@ -20,6 +20,7 @@ const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
 const App = () => {
   const { isColorModeSet, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
   const storedTheme = useSelector((state) => state.theme)
+  const [isAuthenticated, setIsAuthenticated] = useState(Boolean(localStorage.getItem('accessToken')))
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.href.split('?')[1])
@@ -35,8 +36,30 @@ const App = () => {
     setColorMode(storedTheme)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Check authentication status on focus/visibility change
+  useEffect(() => {
+    const handleFocus = () => {
+      const token = localStorage.getItem('accessToken')
+      setIsAuthenticated(Boolean(token))
+    }
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        const token = localStorage.getItem('accessToken')
+        setIsAuthenticated(Boolean(token))
+      }
+    }
+
+    window.addEventListener('focus', handleFocus)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+  }, [])
+
   // Authentication status
-  const isAuthenticated = Boolean(localStorage.getItem('accessToken'))
 
   return (
     <HashRouter>

@@ -96,7 +96,7 @@ const RegistrationForm = () => {
                         placeholder="Enter Name" 
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base" 
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base text-black" 
                         required
                     />
                 </div>
@@ -107,7 +107,7 @@ const RegistrationForm = () => {
                         placeholder="Enter phone number" 
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base" 
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base text-black" 
                         required
                     />
                 </div>
@@ -118,7 +118,7 @@ const RegistrationForm = () => {
                         placeholder="Email" 
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base" 
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base text-black" 
                     />
                 </div>
                 <div>

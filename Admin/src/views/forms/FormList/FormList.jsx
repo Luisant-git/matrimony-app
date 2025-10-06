@@ -1,146 +1,246 @@
-import React, { useEffect, useState } from 'react';
-import { CCard, CCardBody, CRow, CCol, CTable, CTableBody, CTableHead, CTableRow, CTableDataCell, CButton, CModal, CModalBody, CModalHeader, CModalTitle, CModalFooter } from '@coreui/react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { toast } from 'react-toastify'; // Optional, for alert messages
-import UserDetailsModal from './UserDetailsModal';
+import React, { useEffect, useState } from 'react'
+import {
+  CCard,
+  CCardBody,
+  CRow,
+  CCol,
+  CTable,
+  CTableBody,
+  CTableHead,
+  CTableRow,
+  CTableDataCell,
+  CButton,
+  CModal,
+  CModalBody,
+  CModalHeader,
+  CModalTitle,
+  CModalFooter,
+} from '@coreui/react'
+import { Link } from 'react-router-dom'
+import axios from 'axios'
+import { toast } from 'react-toastify' // Optional, for alert messages
+import UserDetailsModal from './UserDetailsModal'
 function FormList() {
-  const [userData, setUserData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' });
-  const [genderFilter, setGenderFilter] = useState('All');
-  const [stateFilter, setStateFilter] = useState('All');
-  const [districtFilter, setDistrictFilter] = useState('All');
-  const [educationFilter, setEducationFilter] = useState('All');
-  const [jobTypeFilter, setJobTypeFilter] = useState('All');
-  const [selectedUser, setSelectedUser] = useState(null);
-  const[refresh,setRefresh]=useState(false)
-  const [modalVisible, setModalVisible] = useState(false);
-  const navigate = useNavigate();
+  const [userData, setUserData] = useState([])
+  const [filteredData, setFilteredData] = useState([])
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' })
+  const [genderFilter, setGenderFilter] = useState('All')
+  const [stateFilter, setStateFilter] = useState('All')
+  const [districtFilter, setDistrictFilter] = useState('All')
+  const [educationFilter, setEducationFilter] = useState('All')
+  const [jobTypeFilter, setJobTypeFilter] = useState('All')
+  const [selectedUser, setSelectedUser] = useState(null)
+  const [refresh, setRefresh] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false)
+  const [deactivateModalVisible, setDeactivateModalVisible] = useState(false)
+  const [deactivateReason, setDeactivateReason] = useState('')
+  const [deactivateOtherText, setDeactivateOtherText] = useState('')
+  const [userToDeactivate, setUserToDeactivate] = useState(null)
+  const [minAge, setMinAge] = useState('')
+  const [maxAge, setMaxAge] = useState('')
+
+  const getAge = (u) => {
+    const explicit = Number(u?.age)
+    if (!Number.isNaN(explicit) && explicit > 0) return explicit
+
+    const dobStr = u?.dateOfBirth || u?.dob || u?.birthDate
+    if (!dobStr) return null
+
+    const dob = new Date(dobStr)
+    if (isNaN(dob)) return null
+
+    const today = new Date()
+    let age = today.getFullYear() - dob.getFullYear()
+    const m = today.getMonth() - dob.getMonth()
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--
+    return age
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/user/data`);
-        const data = await response.json();
-        setUserData(data);
-        setFilteredData(data);
+        // includeInactive=true so admin can view and reactivate deactivated users
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/user/data`)
+        const data = await response.json()
+        setUserData(data)
+        setFilteredData(data)
       } catch (error) {
-        console.error('Error fetching user data: ', error);
+        console.error('Error fetching user data: ', error)
       }
-    };
-    fetchData();
-  }, [refresh]);
-  const filterData = (searchTerm, gender, state, district, education, jobType) => {
+    }
+    fetchData()
+  }, [refresh])
+  const filterData = (
+    searchTerm,
+    gender,
+    state,
+    district,
+    education,
+    jobType,
+    minAgeVal,
+    maxAgeVal,
+  ) => {
     const filtered = userData.filter((user) => {
-      const normalizedSearchTerm = searchTerm.trim().toLowerCase();
-      const normalizedDistrict = district.trim().toLowerCase();
-  
+      const normalizedSearchTerm = searchTerm.trim().toLowerCase()
+      const normalizedDistrict = district.trim().toLowerCase()
+
       const matchesSearch =
         user.fullName.toLowerCase().includes(normalizedSearchTerm) ||
         user.email.toLowerCase().includes(normalizedSearchTerm) ||
-        user.mobileNo.includes(normalizedSearchTerm);
-  
-      const matchesGender = gender === 'All' || user.gender === gender;
-      const matchesState = state === 'All' || user.state === state;
+        user.mobileNo.includes(normalizedSearchTerm)
+
+      const matchesGender = gender === 'All' || user.gender === gender
+      const matchesState = state === 'All' || user.state === state
       const matchesDistrict =
         district === 'All' ||
-        (user.district && user.district.trim().toLowerCase() === normalizedDistrict);
-      const matchesEducation = education === 'All' || user.education === education;
-      const matchesJobType = jobType === 'All' || user.job_type === jobType;
-  
+        (user.district && user.district.trim().toLowerCase() === normalizedDistrict)
+      const matchesEducation = education === 'All' || user.education === education
+      const matchesJobType = jobType === 'All' || user.job_type === jobType
+
+      const age = getAge(user)
+      const minOk = minAgeVal === '' || (age !== null && age >= Number(minAgeVal))
+      const maxOk = maxAgeVal === '' || (age !== null && age <= Number(maxAgeVal))
+      const matchesAge = minOk && maxOk
+
       return (
         matchesSearch &&
         matchesGender &&
         matchesState &&
         matchesDistrict &&
         matchesEducation &&
-        matchesJobType
-      );
-    });
-  
-    setFilteredData(filtered);
-  };
-  
+        matchesJobType &&
+        matchesAge
+      )
+    })
+
+    setFilteredData(filtered)
+  }
 
   const handleSearch = (e) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-    filterData(value, genderFilter, stateFilter, districtFilter, educationFilter, jobTypeFilter);
-  };
+    const value = e.target.value
+    setSearchQuery(value)
+    filterData(
+      value,
+      genderFilter,
+      stateFilter,
+      districtFilter,
+      educationFilter,
+      jobTypeFilter,
+      minAge,
+      maxAge,
+    )
+  }
 
   const handleFilterChange = (filterType, value) => {
-    const normalizedValue = value.trim().toLowerCase();
+    const normalizedValue = value.trim().toLowerCase()
     switch (filterType) {
       case 'gender':
-        setGenderFilter(value);
-        filterData(searchQuery, value, stateFilter, districtFilter, educationFilter, jobTypeFilter);
-        break;
+        setGenderFilter(value)
+        filterData(searchQuery, value, stateFilter, districtFilter, educationFilter, jobTypeFilter)
+        break
       case 'state':
-        setStateFilter(value);
-        filterData(searchQuery, genderFilter, value, districtFilter, educationFilter, jobTypeFilter);
-        break;
+        setStateFilter(value)
+        filterData(searchQuery, genderFilter, value, districtFilter, educationFilter, jobTypeFilter)
+        break
       case 'district':
-        setDistrictFilter(value);
-        filterData(searchQuery, genderFilter, stateFilter, value, educationFilter, jobTypeFilter);
-        break;
+        setDistrictFilter(value)
+        filterData(searchQuery, genderFilter, stateFilter, value, educationFilter, jobTypeFilter)
+        break
       case 'education':
-        setEducationFilter(value);
-        filterData(searchQuery, genderFilter, stateFilter, districtFilter, value, jobTypeFilter);
-        break;
+        setEducationFilter(value)
+        filterData(searchQuery, genderFilter, stateFilter, districtFilter, value, jobTypeFilter)
+        break
       case 'jobType':
-        setJobTypeFilter(value);
-        filterData(searchQuery, genderFilter, stateFilter, districtFilter, educationFilter, value);
-        break;
+        setJobTypeFilter(value)
+        filterData(searchQuery, genderFilter, stateFilter, districtFilter, educationFilter, value)
+        break
+      case 'minAge':
+        setMinAge(value)
+        filterData(
+          searchQuery,
+          genderFilter,
+          stateFilter,
+          districtFilter,
+          educationFilter,
+          jobTypeFilter,
+          value,
+          maxAge,
+        )
+        break
+      case 'maxAge':
+        setMaxAge(value)
+        filterData(
+          searchQuery,
+          genderFilter,
+          stateFilter,
+          districtFilter,
+          educationFilter,
+          jobTypeFilter,
+          minAge,
+          value,
+        )
+        break
       default:
-        break;
+        break
     }
-  };
+  }
 
   const handleSort = (key) => {
-    let direction = 'asc';
+    let direction = 'asc'
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
+      direction = 'desc'
     }
-    setSortConfig({ key, direction });
+    setSortConfig({ key, direction })
     const sortedData = [...filteredData].sort((a, b) => {
       if (direction === 'asc') {
-        return a[key] > b[key] ? 1 : -1;
+        return a[key] > b[key] ? 1 : -1
       } else {
-        return a[key] < b[key] ? 1 : -1;
+        return a[key] < b[key] ? 1 : -1
       }
-    });
-    setFilteredData(sortedData);
-  };
+    })
+    setFilteredData(sortedData)
+  }
 
   const handleViewDetails = (user) => {
-    setSelectedUser(user);
-    setModalVisible(true);
-  };
-
-
-
-  
-const handleDeleteUser = async (userId) => {
-  const endpoint = `${import.meta.env.VITE_API_URL}/user/data/${userId.userId}`;
-  
-  try {
-    const response = await axios.delete(endpoint);
-    if (response.status === 200) {
-      toast.success('User deleted successfully');
-      setRefresh(!refresh)
-      // Optionally, refresh the user list or update the state
-    } else {
-      toast.error('Failed to delete user');
-    }
-  } catch (error) {
-    console.error('Error deleting user:', error);
-    toast.error('An error occurred while deleting the user');
+    setSelectedUser(user)
+    setModalVisible(true)
   }
-};
 
-console.log(selectedUser);
+  const handleDeleteUser = async (userId) => {
+    const endpoint = `${import.meta.env.VITE_API_URL}/user/data/${userId.userId}`
+
+    try {
+      const response = await axios.delete(endpoint)
+      if (response.status === 200) {
+        toast.success('User deleted successfully')
+        setRefresh(!refresh)
+        // Optionally, refresh the user list or update the state
+      } else {
+        toast.error('Failed to delete user')
+      }
+    } catch (error) {
+      console.error('Error deleting user:', error)
+      toast.error('An error occurred while deleting the user')
+    }
+  }
+
+  const handleActivateUser = async (user) => {
+    try {
+      await axios.patch(`${import.meta.env.VITE_API_URL}/user/data/${user.userId}`, {
+        isActive: true,
+        deactivationReason: null,
+        deactivatedAt: null,
+      })
+      toast.success('User activated')
+      setRefresh(!refresh)
+    } catch (err) {
+      console.error(err)
+      toast.error('Failed to activate user')
+    }
+  }
+
+  console.log(selectedUser)
 
   return (
     <div>
@@ -156,7 +256,8 @@ console.log(selectedUser);
                 className="form-control"
               />
             </CCol>
-            <CCol xs="12" md="6" lg="3">
+
+            <CCol xs="12" md="6" lg="2">
               <select
                 className="form-select"
                 value={genderFilter}
@@ -167,7 +268,36 @@ console.log(selectedUser);
                 <option value="FEMALE">Female</option>
               </select>
             </CCol>
-            <CCol xs="12" md="6" lg="3">
+
+            {/* Age range in the same row, split evenly */}
+            <CCol xs="12" md="6" lg="2">
+              <CRow className="g-2">
+                <CCol xs="6">
+                  <input
+                    type="number"
+                    min={0}
+                    placeholder="Min"
+                    title="Min Age"
+                    value={minAge}
+                    onChange={(e) => handleFilterChange('minAge', e.target.value)}
+                    className="form-control"
+                  />
+                </CCol>
+                <CCol xs="6">
+                  <input
+                    type="number"
+                    min={0}
+                    placeholder="Max"
+                    title="Max Age"
+                    value={maxAge}
+                    onChange={(e) => handleFilterChange('maxAge', e.target.value)}
+                    className="form-control"
+                  />
+                </CCol>
+              </CRow>
+            </CCol>
+
+            <CCol xs="12" md="6" lg="2">
               <select
                 className="form-select"
                 value={stateFilter}
@@ -178,6 +308,7 @@ console.log(selectedUser);
                 <option value="Kerala">Kerala</option>
               </select>
             </CCol>
+
             <CCol xs="12" md="6" lg="2">
               <select
                 className="form-select"
@@ -185,50 +316,51 @@ console.log(selectedUser);
                 onChange={(e) => handleFilterChange('district', e.target.value)}
               >
                 <option value="All">All Districts</option>
-             
-<option value="Ariyalur">Ariyalur</option>
-<option value="Chengalpattu">Chengalpattu</option>
-<option value="Chennai">Chennai</option>
-<option value="Coimbatore">Coimbatore</option>
-<option value="Cuddalore">Cuddalore</option>
-<option value="Dharmapuri">Dharmapuri</option>
-<option value="Dindigul">Dindigul</option>
-<option value="Erode">Erode</option>
-<option value="Kallakurichi">Kallakurichi</option>
-<option value="Kanchipuram">Kanchipuram</option>
-<option value="Kanyakumari">Kanyakumari</option>
-<option value="Karur">Karur</option>
-<option value="Krishnagiri">Krishnagiri</option>
-<option value="Madurai">Madurai</option>
-<option value="Mayiladuthurai">Mayiladuthurai</option>
-<option value="Nagapattinam">Nagapattinam</option>
-<option value="Namakkal">Namakkal</option>
-<option value="Nilgiris">Nilgiris</option>
-<option value="Perambalur">Perambalur</option>
-<option value="Pudukkottai">Pudukkottai</option>
-<option value="Ramanathapuram">Ramanathapuram</option>
-<option value="Ranipet">Ranipet</option>
-<option value="Salem">Salem</option>
-<option value="Sivaganga">Sivaganga</option>
-<option value="Tenkasi">Tenkasi</option>
-<option value="Thanjavur">Thanjavur</option>
-<option value="Theni">Theni</option>
-<option value="Thiruvallur">Thiruvallur</option>
-<option value="Thiruvarur">Thiruvarur</option>
-<option value="Thoothukudi">Thoothukudi</option>
-<option value="Tiruchirappalli">Tiruchirappalli</option>
-<option value="Tirunelveli">Tirunelveli</option>
-<option value="Tirupathur">Tirupathur</option>
-<option value="Tiruppur">Tiruppur</option>
-<option value="Tiruvannamalai">Tiruvannamalai</option>
-<option value="Vellore">Vellore</option>
-<option value="Viluppuram">Viluppuram</option>
-<option value="Virudhunagar">Virudhunagar</option>
-
+                <option value="Ariyalur">Ariyalur</option>
+                <option value="Chengalpattu">Chengalpattu</option>
+                <option value="Chennai">Chennai</option>
+                <option value="Coimbatore">Coimbatore</option>
+                <option value="Cuddalore">Cuddalore</option>
+                <option value="Dharmapuri">Dharmapuri</option>
+                <option value="Dindigul">Dindigul</option>
+                <option value="Erode">Erode</option>
+                <option value="Kallakurichi">Kallakurichi</option>
+                <option value="Kanchipuram">Kanchipuram</option>
+                <option value="Kanyakumari">Kanyakumari</option>
+                <option value="Karur">Karur</option>
+                <option value="Krishnagiri">Krishnagiri</option>
+                <option value="Madurai">Madurai</option>
+                <option value="Mayiladuthurai">Mayiladuthurai</option>
+                <option value="Nagapattinam">Nagapattinam</option>
+                <option value="Namakkal">Namakkal</option>
+                <option value="Nilgiris">Nilgiris</option>
+                <option value="Perambalur">Perambalur</option>
+                <option value="Pudukkottai">Pudukkottai</option>
+                <option value="Ramanathapuram">Ramanathapuram</option>
+                <option value="Ranipet">Ranipet</option>
+                <option value="Salem">Salem</option>
+                <option value="Sivaganga">Sivaganga</option>
+                <option value="Tenkasi">Tenkasi</option>
+                <option value="Thanjavur">Thanjavur</option>
+                <option value="Theni">Theni</option>
+                <option value="Thiruvallur">Thiruvallur</option>
+                <option value="Thiruvarur">Thiruvarur</option>
+                <option value="Thoothukudi">Thoothukudi</option>
+                <option value="Tiruchirappalli">Tiruchirappalli</option>
+                <option value="Tirunelveli">Tirunelveli</option>
+                <option value="Tirupathur">Tirupathur</option>
+                <option value="Tiruppur">Tiruppur</option>
+                <option value="Tiruvannamalai">Tiruvannamalai</option>
+                <option value="Vellore">Vellore</option>
+                <option value="Viluppuram">Viluppuram</option>
+                <option value="Virudhunagar">Virudhunagar</option>
               </select>
             </CCol>
-            <CCol xs="12" md="6" lg="1">
-            <Link to='/forms/form-control'> <button className='btn btn-success text-white'>Add</button></Link>
+
+            <CCol xs="6" md="6" lg="1" className="d-flex">
+              <Link to="/forms/form-control" className="ms-auto">
+                <button className="btn btn-success text-white w-100">Add</button>
+              </Link>
             </CCol>
           </CRow>
         </CCardBody>
@@ -269,13 +401,39 @@ console.log(selectedUser);
                     <CButton color="primary" onClick={() => handleViewDetails(user)}>
                       View Details
                     </CButton>
-                    <CButton color="secondary" className='ms-2' onClick={() => handleDeleteUser(user)}>
-                     Delete
+                    <CButton
+                      color="secondary"
+                      className="ms-2"
+                      onClick={() => handleDeleteUser(user)}
+                    >
+                      Delete
                     </CButton>
-                    
-                    <Link to={`/forms/update/${user.userId}`}><CButton color="secondary" className='ms-2' >Update
-                    </CButton></Link>
 
+                    <Link to={`/forms/update/${user.userId}`}>
+                      <CButton color="secondary" className="ms-2">
+                        Update
+                      </CButton>
+                    </Link>
+                    {user.isActive === false ? (
+                      <CButton
+                        color="success"
+                        className="ms-2"
+                        onClick={() => handleActivateUser(user)}
+                      >
+                        Activate
+                      </CButton>
+                    ) : (
+                      <CButton
+                        color="danger"
+                        className="ms-2"
+                        onClick={() => {
+                          setUserToDeactivate(user)
+                          setDeactivateModalVisible(true)
+                        }}
+                      >
+                        Deactivate
+                      </CButton>
+                    )}
                   </CTableDataCell>
                 </CTableRow>
               ))}
@@ -285,10 +443,78 @@ console.log(selectedUser);
       </CCard>
 
       {selectedUser && (
-       <UserDetailsModal modalVisible={modalVisible} setModalVisible={setModalVisible} selectedUser={selectedUser}/>
+        <UserDetailsModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          selectedUser={selectedUser}
+        />
       )}
+
+      {/* Deactivate Modal */}
+      <CModal visible={deactivateModalVisible} onClose={() => setDeactivateModalVisible(false)}>
+        <CModalHeader>Deactivate User</CModalHeader>
+        <CModalBody>
+          <p>Please choose a reason for deactivation:</p>
+          <div className="mb-2">
+            <select
+              className="form-select"
+              value={deactivateReason}
+              onChange={(e) => setDeactivateReason(e.target.value)}
+            >
+              <option value="">Select reason</option>
+              <option value="got_married">Got Married</option>
+              <option value="improper_behavior">Improper Behavior</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          {deactivateReason === 'other' && (
+            <div className="mb-2">
+              <input
+                className="form-control"
+                placeholder="Specify reason"
+                value={deactivateOtherText}
+                onChange={(e) => setDeactivateOtherText(e.target.value)}
+              />
+            </div>
+          )}
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setDeactivateModalVisible(false)}>
+            Cancel
+          </CButton>
+          <CButton
+            color="danger"
+            onClick={async () => {
+              if (!userToDeactivate) return
+              if (!deactivateReason) {
+                toast.error('Please select a reason')
+                return
+              }
+              const reasonText =
+                deactivateReason === 'other' ? deactivateOtherText : deactivateReason
+              try {
+                await axios.patch(
+                  `${import.meta.env.VITE_API_URL}/user/data/${userToDeactivate.userId}`,
+                  { isActive: false, deactivationReason: reasonText },
+                )
+                toast.success('User deactivated')
+                setDeactivateModalVisible(false)
+                setDeactivateReason('')
+                setDeactivateOtherText('')
+                setUserToDeactivate(null)
+                setRefresh(!refresh)
+              } catch (err) {
+                console.error(err)
+                toast.error('Failed to deactivate user')
+              }
+            }}
+          >
+            Confirm
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </div>
-  );
+  )
 }
 
-export default FormList;
+export default FormList

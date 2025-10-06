@@ -31,9 +31,9 @@ const navigate=useNavigate()
       });
       const { accessToken, role } = response.data;
       console.log('Login successful:', accessToken, role);
+      localStorage.setItem('accessToken', accessToken); // Save token securely
       navigate('/dashboard')
       window.location.reload()
-      localStorage.setItem('accessToken', accessToken); // Save token securely
     } catch (err) {
       if (err.response) {
         // Backend responded with a status other than 2xx

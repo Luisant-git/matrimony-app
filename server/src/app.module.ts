@@ -18,13 +18,14 @@ import { SubCasteModule } from './sub-caste/sub-caste.module';
 import { KulamModule } from './kulam/kulam.module';
 import { KothiramModule } from './kothiram/kothiram.module';
 import { WishlistModule } from './wishlist/wishlist.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
     AuthModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
-      serveRoot: '/uploads', 
+      serveRoot: '/uploads',
     }),
     JwtModule.register({
       secret: 'your-secret-key', // Replace with your secret key
@@ -32,6 +33,7 @@ import { WishlistModule } from './wishlist/wishlist.module';
     }),
     PrismaModule,
     AdminModule,
+    DashboardModule,
     UserModule,
     CasteModule,
     CommunityModule,

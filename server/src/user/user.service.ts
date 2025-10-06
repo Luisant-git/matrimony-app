@@ -18,6 +18,17 @@ export class UserService {
   async create(createUserDto: any) {
     const { siblings, jathagam, password, ...userData } = createUserDto;
 
+    // Convert string fields to numbers
+    if (userData.height && typeof userData.height === 'string') {
+      userData.height = userData.height === '' ? null : parseFloat(userData.height);
+    }
+    if (userData.weight && typeof userData.weight === 'string') {
+      userData.weight = userData.weight === '' ? null : parseFloat(userData.weight);
+    }
+    if (userData.income && typeof userData.income === 'string') {
+      userData.income = userData.income === '' ? null : parseFloat(userData.income);
+    }
+
     // Hash the password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -46,7 +57,18 @@ export class UserService {
         jathagam: true,
         wishlists: true,
       },
-    });
+    })
+  }
+
+  async activeUsers () {
+    return this.prisma.user.findMany({
+      where: { isActive: true},
+      include:{
+        siblings: true,
+        jathagam: true,
+        wishlists: true,
+      }
+    })
   }
 
   async findOne(id: string) {
@@ -68,48 +90,59 @@ export class UserService {
     const { jathagam, siblings, ...userPayload } = updateUserDto || {};
 
     // Update user fields (excluding jathagam relationship)
+    // If admin set isActive false and didn't provide deactivatedAt, set it now
+    const shouldSetDeactivatedAt =
+      userPayload?.isActive === false && !userPayload?.deactivatedAt;
+    if (shouldSetDeactivatedAt) {
+      userPayload.deactivatedAt = new Date();
+    }
+
+    const updateData: any = {
+      regNo: userPayload?.regNo,
+      fullName: userPayload?.fullName,
+      mobileNo: userPayload?.mobileNo,
+      email: userPayload?.email,
+      password: userPayload?.password,
+      gender: userPayload?.gender,
+      dateOfBirth: userPayload?.dateOfBirth,
+      state: userPayload.state,
+      district: userPayload?.district,
+      address: userPayload?.address,
+      profile: userPayload?.profile,
+      birthTime: userPayload?.birthTime,
+      userProfile: userPayload?.userProfile, // set the array of profile image URLs
+      birthPlace: userPayload?.birthPlace,
+      education: userPayload?.education,
+      job: userPayload?.job,
+      job_type: userPayload?.job_type,
+      organization: userPayload?.organization,
+      height: userPayload?.height,
+      weight: userPayload?.weight,
+      color: userPayload?.color,
+      income: userPayload?.income,
+      kulam: userPayload?.kulam,
+      kothiram: userPayload?.kothiram,
+      poorvigam: userPayload?.poorvigam,
+      maritalStatus: userPayload?.maritalStatus,
+      ownHouse: userPayload?.ownHouse,
+      casteId: userPayload?.casteId,
+      subCasteId: userPayload?.subCasteId,
+      communityId: userPayload?.communityId,
+      kulamId: userPayload?.kulamId,
+      kothiramId: userPayload?.kothiramId,
+      isActive: userPayload?.isActive,
+      deactivationReason: userPayload?.deactivationReason,
+      deactivatedAt: userPayload?.deactivatedAt,
+      updatedAt: new Date(),
+      siblings: {
+        update: siblings?.update || [],
+        create: siblings?.create || [],
+      },
+    };
+
     const updatedUser = await this.prisma.user.update({
       where: { userId: id },
-      data: {
-        regNo: userPayload?.regNo,
-        fullName: userPayload?.fullName,
-        mobileNo: userPayload?.mobileNo,
-        email: userPayload?.email,
-        password: userPayload?.password,
-        gender: userPayload?.gender,
-        dateOfBirth: userPayload?.dateOfBirth,
-        state: userPayload.state,
-        district: userPayload?.district,
-        address: userPayload?.address,
-        profile: userPayload?.profile,
-        birthTime: userPayload?.birthTime,
-        userProfile: userPayload?.userProfile, // set the array of profile image URLs
-        birthPlace: userPayload?.birthPlace,
-        education: userPayload?.education,
-        job: userPayload?.job,
-        job_type: userPayload?.job_type,
-        organization: userPayload?.organization,
-        height: userPayload?.height,
-        weight: userPayload?.weight,
-        color: userPayload?.color,
-        income: userPayload?.income,
-        kulam: userPayload?.kulam,
-        kothiram: userPayload?.kothiram,
-        poorvigam: userPayload?.poorvigam,
-        maritalStatus: userPayload?.maritalStatus,
-        ownHouse: userPayload?.ownHouse,
-        casteId: userPayload?.casteId,
-        subCasteId: userPayload?.subCasteId,
-        communityId: userPayload?.communityId,
-        kulamId: userPayload?.kulamId,
-        kothiramId: userPayload?.kothiramId,
-        isActive: userPayload?.isActive,
-        updatedAt: new Date(),
-        siblings: {
-          update: siblings?.update || [],
-          create: siblings?.create || [],
-        },
-      },
+      data: updateData,
     });
 
     // If jathagam array is provided, replace existing jathagam records for this user
@@ -319,6 +352,7 @@ export class UserService {
           subCasteId ? { subCasteId } : {},
           kulamId ? { kulamId } : {},
           kothiramId ? { kothiramId } : {},
+          { isActive: true },
           lagnam || dosham?.length || natchathiram?.length || rasi
             ? {
                 jathagam: {

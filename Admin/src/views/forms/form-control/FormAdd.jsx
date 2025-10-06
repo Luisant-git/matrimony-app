@@ -264,9 +264,9 @@ function FormAdd({
                 value={formData.height}
                 required
                 onChange={handleChange}
-                type="number"
+                type="text"
                 id="height"
-                placeholder="Enter your height"
+                placeholder="Enter your height (e.g., 5.5)"
               />
             </div>
 
@@ -278,9 +278,9 @@ function FormAdd({
                 value={formData.weight}
                 required
                 onChange={handleChange}
-                type="number"
+                type="text"
                 id="weight"
-                placeholder="Enter your weight in KG"
+                placeholder="Enter your weight in KG (e.g., 65.5)"
               />
             </div>
 
@@ -297,6 +297,7 @@ function FormAdd({
                 <option value="">
                   Select your color preference / உங்கள் வண்ண விருப்பத்தை தேர்ந்தெடுக்கவும்
                 </option>
+                <option value="fair">Fair / வெள்ளை</option>
                 <option value="light_brown">Light Brown / இளப்பழுப்பு</option>
                 <option value="medium_brown">Medium Brown / மிதப்பழுப்பு</option>
                 <option value="dark_brown">Dark Brown / இரண்டிப்பழுப்பு</option>
@@ -312,7 +313,7 @@ function FormAdd({
                 value={formData.income}
                 onChange={handleChange}
                 required
-                type="number"
+                type="text"
                 id="income"
                 placeholder="Enter your income Per Month"
               />
@@ -332,6 +333,7 @@ function FormAdd({
                 <option value="SINGLE">Single</option>
                 <option value="MARRIED">Married</option>
                 <option value="DIVORCED">Divorced</option>
+                <option value="OTHERS">Others</option>
               </select>
             </div>
 

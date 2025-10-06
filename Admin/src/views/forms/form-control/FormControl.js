@@ -252,11 +252,11 @@ const FormControl = () => {
     education: '',
     job: '',
     organization: '',
-    height: 0,
-    weight: 0,
+    height: '',
+    weight: '',
     color: '',
     profile: 'qqq',
-    income: 0,
+    income: '',
     maritalStatus: 'SINGLE',
     ownHouse: true,
     poorvigam: '',
@@ -280,8 +280,8 @@ const FormControl = () => {
       [name]:
         name === 'ownHouse'
           ? value === 'true'
-          : ['height', 'weight', 'income'].includes(name)
-            ? parseInt(value, 10) || 0
+          : name === 'income'
+            ? value
             : value,
     })
   }
@@ -370,14 +370,14 @@ const FormControl = () => {
         education: '',
         job: '',
         organization: '',
-        height: 0,
-        weight: 0,
+        height: '',
+        weight: '',
         poorvigam: '',
         kothiram: '',
         kulam: '',
         color: '',
         profile: '',
-        income: 0,
+        income: '',
         maritalStatus: 'SINGLE',
         ownHouse: true,
         casteId: '',

@@ -32,6 +32,12 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @Get('active')
+  @ApiOperation({ summary: 'Active users only'})
+  activeUsers() {
+    return this.userService.activeUsers();
+  }
+
   @Get('data/:id')
   @ApiOperation({ summary: 'Retrieve a user by ID' })
   findOne(@Param('id') id: string) {

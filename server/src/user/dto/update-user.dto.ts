@@ -54,4 +54,13 @@ export class UpdateUserDto {
   @IsOptional()
   @Type(() => CreateJathagamDto)
   jathagam?: CreateJathagamDto[];
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  deactivationReason?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  deactivatedAt?: Date;
 }

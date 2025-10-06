@@ -33,7 +33,7 @@ export const userAPI = {
     apiCall(`/user/data/${userId}`),
   
   getAllUsers: () => 
-    apiCall('/user/data'),
+    apiCall('/user/active'),
   
   getFilteredUsers: (filters) => {
     const params = new URLSearchParams();

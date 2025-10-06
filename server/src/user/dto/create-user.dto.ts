@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Gender, MaritalStatus } from '@prisma/client';
-import { Type } from 'class-transformer';
+import { Type, Transform } from 'class-transformer';
 import { IsBoolean, IsDateString, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator';
 import { CreateSiblingDto } from './sibilings.dto';
 import { CreateJathagamDto } from './jathagam.dto';
@@ -119,10 +119,12 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsOptional()
+  @Transform(({ value }) => value === '' ? null : parseFloat(value))
   height?: number;
 
   @ApiProperty()
   @IsOptional()
+  @Transform(({ value }) => value === '' ? null : parseFloat(value))
   weight?: number;
 
   @ApiProperty()
@@ -137,6 +139,7 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsOptional()
+  @Transform(({ value }) => value === '' ? null : parseFloat(value))
   income?: number;
 
   @ApiProperty({ enum: MaritalStatus })
