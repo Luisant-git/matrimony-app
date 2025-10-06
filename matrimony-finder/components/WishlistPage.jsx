@@ -85,7 +85,7 @@ const WishlistPage = ({ onNavigateToProfile, onNavigateToLogin }) => {
         return (
             <div className="bg-white py-16">
                 <div className="container mx-auto px-4 text-center">
-                    <div className="text-primary text-lg">Loading your wishlist...</div>
+                    <div className="text-primary text-lg">Loading your saved list...</div>
                 </div>
             </div>
         );
