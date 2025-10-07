@@ -100,15 +100,31 @@ const UserRegistrationPage = ({ onNavigateToLogin }) => {
         });
     };
 
-    const handleImageChange = (e) => {
-        const files = Array.from(e.target.files);
-        files.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                setProfileImages(prev => [...prev, event.target.result]);
+    const compressImage = (file, maxWidth = 800, quality = 0.7) => {
+        return new Promise((resolve) => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            img.onload = () => {
+                const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
+                canvas.width = img.width * ratio;
+                canvas.height = img.height * ratio;
+                
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                resolve(canvas.toDataURL('image/jpeg', quality));
             };
-            reader.readAsDataURL(file);
+            
+            img.src = URL.createObjectURL(file);
         });
+    };
+
+    const handleImageChange = async (e) => {
+        const files = Array.from(e.target.files);
+        for (const file of files) {
+            const compressedImage = await compressImage(file);
+            setProfileImages(prev => [...prev, compressedImage]);
+        }
     };
 
     const removeProfileImage = (index) => {
@@ -149,7 +165,8 @@ const UserRegistrationPage = ({ onNavigateToLogin }) => {
                     weight: parseFloat(dataToSend.weight),
                     userProfile: profileImages,
                     regNo,
-                    profile: 'user'
+                    profile: 'user',
+                    plainPassword: true
                 }),
             });
 
