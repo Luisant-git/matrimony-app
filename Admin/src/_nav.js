@@ -342,6 +342,11 @@ const _nav = [
         name: 'Requested',
         to: '/forms/requested',
       },
+      {
+        component: CNavItem,
+        name: 'Dropdown Management',
+        to: '/dropdown-management',
+      },
     ],
   },
   // {

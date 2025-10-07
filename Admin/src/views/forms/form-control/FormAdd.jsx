@@ -17,6 +17,7 @@ import CatesModal from './CatesModal'
 import ModalSubCaste from './ModalSubCaste'
 import ModalKulam from './ModalKulam'
 import ModalKothiram from './ModalKothiram'
+import InlineDropdownManager from './InlineDropdownManager'
 
 function FormAdd({
   communityData,
@@ -49,6 +50,7 @@ function FormAdd({
   const [subcasteModal, setSubCasteModal] = useState(false)
   const [kulamModal, setKulamModal] = useState(false)
   const [kothiramModal, setKothirammModal] = useState(false)
+  const [manageModal, setManageModal] = useState({ visible: false, type: '', data: [], parentData: [] })
 
   return (
     <div>
@@ -224,7 +226,7 @@ function FormAdd({
                 required
                 id="organization"
               >
-                <option>Select your Job</option>
+                <option>Select your Job Type</option>
                 <option value="Govt">Govt</option>
                 <option value="Private">Private</option>
                 <option value="Business">Business</option>
@@ -363,18 +365,27 @@ function FormAdd({
                 required
                 id="organization"
               >
-                <option>Select your Job</option>
+                <option>Select your Community</option>
                 {communityData?.map((m) => (
                   <option value={m?.communityId}>{m.communityName}</option>
                 ))}
               </CFormSelect>
-              <button
-                className="btn btn-success text-white"
-                type="button"
-                onClick={() => setCommunityModal(true)}
-              >
-                Add
-              </button>
+              <div className="d-flex gap-1">
+                <button
+                  className="btn btn-success text-white btn-sm"
+                  type="button"
+                  onClick={() => setCommunityModal(true)}
+                >
+                  Add
+                </button>
+                <button
+                  className="btn btn-info text-white btn-sm"
+                  type="button"
+                  onClick={() => setManageModal({ visible: true, type: 'community', data: communityData, parentData: [] })}
+                >
+                  Manage
+                </button>
+              </div>
             </div>
             <CFormLabel htmlFor="organization">Caste</CFormLabel>
             <div className="mb-3 d-flex align-item-center justify-content-between gap-2">
@@ -385,18 +396,27 @@ function FormAdd({
                 value={formData?.casteId}
                 id="organization"
               >
-                <option>Select your Job</option>
+                <option>Select your Caste</option>
                 {filterdatacast?.map((m) => (
                   <option value={m?.casteId}>{m?.casteName}</option>
                 ))}
               </CFormSelect>
-              <button
-                className="btn btn-success text-white"
-                type="button"
-                onClick={() => setCasteModal(true)}
-              >
-                Add
-              </button>
+              <div className="d-flex gap-1">
+                <button
+                  className="btn btn-success text-white btn-sm"
+                  type="button"
+                  onClick={() => setCasteModal(true)}
+                >
+                  Add
+                </button>
+                <button
+                  className="btn btn-info text-white btn-sm"
+                  type="button"
+                  onClick={() => setManageModal({ visible: true, type: 'caste', data: casteData, parentData: communityData })}
+                >
+                  Manage
+                </button>
+              </div>
             </div>
 
             <CFormLabel htmlFor="organization">Porvikam</CFormLabel>
@@ -413,13 +433,22 @@ function FormAdd({
                   <option value={m?.subCasteId}>{m?.SubCasteName}</option>
                 ))}
               </CFormSelect>
-              <button
-                className="btn btn-success text-white"
-                type="button"
-                onClick={() => setSubCasteModal(true)}
-              >
-                Add
-              </button>
+              <div className="d-flex gap-1">
+                <button
+                  className="btn btn-success text-white btn-sm"
+                  type="button"
+                  onClick={() => setSubCasteModal(true)}
+                >
+                  Add
+                </button>
+                <button
+                  className="btn btn-info text-white btn-sm"
+                  type="button"
+                  onClick={() => setManageModal({ visible: true, type: 'subcaste', data: subCasteData, parentData: casteData })}
+                >
+                  Manage
+                </button>
+              </div>
             </div>
 
             <CFormLabel htmlFor="organization">kulam</CFormLabel>
@@ -431,18 +460,27 @@ function FormAdd({
                 value={formData?.kulamId}
                 id="organization"
               >
-                <option>Select your Job</option>
+                <option>Select your kulam</option>
                 {filterdatakulam?.map((m) => (
                   <option value={m?.kulamId}>{m?.name}</option>
                 ))}
               </CFormSelect>
-              <button
-                className="btn btn-success text-white"
-                type="button"
-                onClick={() => setKulamModal(true)}
-              >
-                Add
-              </button>
+              <div className="d-flex gap-1">
+                <button
+                  className="btn btn-success text-white btn-sm"
+                  type="button"
+                  onClick={() => setKulamModal(true)}
+                >
+                  Add
+                </button>
+                <button
+                  className="btn btn-info text-white btn-sm"
+                  type="button"
+                  onClick={() => setManageModal({ visible: true, type: 'kulam', data: kulamData, parentData: subCasteData })}
+                >
+                  Manage
+                </button>
+              </div>
             </div>
 
             <CFormLabel htmlFor="organization">Kothiram</CFormLabel>
@@ -454,18 +492,27 @@ function FormAdd({
                 value={formData?.kothiramId}
                 id="organization"
               >
-                <option>Select your Job</option>
+                <option>Select your Kothiram</option>
                 {filterdatakothiram?.map((m) => (
                   <option value={m?.kothiramId}>{m?.name}</option>
                 ))}
               </CFormSelect>
-              <button
-                className="btn btn-success text-white"
-                type="button"
-                onClick={() => setKothirammModal(true)}
-              >
-                Add
-              </button>
+              <div className="d-flex gap-1">
+                <button
+                  className="btn btn-success text-white btn-sm"
+                  type="button"
+                  onClick={() => setKothirammModal(true)}
+                >
+                  Add
+                </button>
+                <button
+                  className="btn btn-info text-white btn-sm"
+                  type="button"
+                  onClick={() => setManageModal({ visible: true, type: 'kothiram', data: kothirams, parentData: kulamData })}
+                >
+                  Manage
+                </button>
+              </div>
             </div>
 
             <h4 className="p-2">Address Details</h4>
@@ -632,6 +679,18 @@ function FormAdd({
         communityData={communityData}
         casteModal={casteModal}
         setCasteModal={setCasteModal}
+      />
+      
+      <InlineDropdownManager
+        visible={manageModal.visible}
+        onClose={() => setManageModal({ visible: false, type: '', data: [], parentData: [] })}
+        type={manageModal.type}
+        data={manageModal.data}
+        parentData={manageModal.parentData}
+        onRefresh={() => {
+          setRefresh(!refresh)
+          setManageModal({ visible: false, type: '', data: [], parentData: [] })
+        }}
       />
     </div>
   )

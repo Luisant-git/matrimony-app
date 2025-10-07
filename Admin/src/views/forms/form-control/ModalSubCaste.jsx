@@ -23,13 +23,13 @@ function ModalSubCaste({ setSubCasteModal, subcasteModal,setRefresh ,refresh,cas
       .post(`${import.meta.env.VITE_API_URL}/sub-caste`, { subCasteName,casteId })
       .then((res) => {
         console.log(res);
-        toast.success('Community added successfully!'); 
+        toast.success('Porvikam added successfully!'); 
         setSubCasteModal(false); 
         setRefresh(!refresh)
       })
       .catch((err) => {
         console.error(err);
-        toast.error('Failed to add community. Please try again.');
+        toast.error('Failed to add Porvikam. Please try again.');
       });
   };
 

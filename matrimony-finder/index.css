@@ -33,3 +33,13 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: #C73652;
 }
+
+/* Hide scrollbar for featured profiles */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

@@ -23,13 +23,13 @@ import {
         .post(`${import.meta.env.VITE_API_URL}/kulams`, { name,subCasteId })
         .then((res) => {
           console.log(res);
-          toast.success('Community added successfully!'); 
+          toast.success('kulams added successfully!'); 
           setKulamModal(false); 
           setRefresh(!refresh)
         })
         .catch((err) => {
           console.error(err);
-          toast.error('Failed to add community. Please try again.');
+          toast.error('Failed to add kulams. Please try again.');
         });
     };
   

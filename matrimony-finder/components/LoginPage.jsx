@@ -17,7 +17,7 @@ const EyeOffIcon = ({ className }) => (
     </svg>
 );
 
-const LoginPage = () => {
+const LoginPage = ({ onNavigateToRegister }) => {
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [mobileNo, setMobileNo] = useState('');
     const [password, setPassword] = useState('');
@@ -132,6 +132,19 @@ const LoginPage = () => {
                                 >
                                     {loading ? 'Logging in...' : 'Login'}
                                 </button>
+                            </div>
+
+                            <div className="text-center">
+                                <p className="text-sm text-gray-600">
+                                    Don't have an account?{' '}
+                                    <button
+                                        type="button"
+                                        onClick={onNavigateToRegister}
+                                        className="font-medium text-primary hover:text-primary-dark"
+                                    >
+                                        Register here
+                                    </button>
+                                </p>
                             </div>
                         </form>
                     </div>

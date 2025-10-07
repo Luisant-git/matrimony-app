@@ -102,7 +102,7 @@ const SearchSection = ({ onNavigateToProfile }) => {
     }
 
     return (
-        <section className="py-20 bg-gray-50">
+        <section className="pb-20 bg-gray-50">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
                      <h2 className="text-3xl md:text-4xl font-bold">Search Results your <span className="text-primary">Perfect partner</span> here</h2>
@@ -111,7 +111,7 @@ const SearchSection = ({ onNavigateToProfile }) => {
                 <div className="flex flex-col lg:flex-row gap-8">
                     <FilterComponent onFilterChange={handleFilterChange} />
                     <div className="w-full lg:w-3/4">
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                             {(showAll ? profiles : profiles.slice(0, 6)).map((profile, index) => (
                                 <ProfileCard key={profile.userId || index} profile={{
                                     name: profile.fullName,

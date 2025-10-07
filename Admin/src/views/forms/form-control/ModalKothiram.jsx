@@ -23,13 +23,13 @@ import {
         .post(`${import.meta.env.VITE_API_URL}/kothirams`, { name,kulamId })
         .then((res) => {
           console.log(res);
-          toast.success('Community added successfully!'); 
+          toast.success('kothirams added successfully!'); 
           setKothirammModal(false); 
           setRefresh(!refresh)
         })
         .catch((err) => {
           console.error(err);
-          toast.error('Failed to add community. Please try again.');
+          toast.error('Failed to add kothirams. Please try again.');
         });
     };
   

@@ -322,7 +322,7 @@ const FormControl = () => {
       })
 
       console.log('Email sent successfully:', response.data)
-      toast.success('Email Sended successful!')
+      toast.success('Email Sent successful!')
       return response.data
     } catch (error) {
       console.error('Error sending email:', error)

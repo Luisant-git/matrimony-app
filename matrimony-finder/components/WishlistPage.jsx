@@ -112,7 +112,7 @@ const WishlistPage = ({ onNavigateToProfile, onNavigateToLogin }) => {
                         <p className="text-gray-400 mb-6">Start exploring profiles and save the ones you like!</p>
                     </div>
                 ) : (
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                         {wishlistProfiles.map((profile) => (
                             <div key={profile.userId} className="bg-white rounded-2xl shadow-lg overflow-hidden group">
                                 <div className="relative">

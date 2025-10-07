@@ -2,6 +2,7 @@ import React from 'react'
 import ReList from './views/forms/FormList/ReList'
 import Update_form from './views/forms/form-control/Update_form'
 const FormList = React.lazy(() => import('./views/forms/FormList/FormList'))
+const DropdownManagement = React.lazy(() => import('./views/forms/form-control/DropdownManagement'))
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -86,6 +87,7 @@ const routes = [
   { path: '/forms/list', name: 'Form list', element: FormList },
   { path: '/forms/update/:id', name: 'Form Update', element: Update_form },
   { path: '/forms/requested', name: 'Form list', element: ReList },
+  { path: '/dropdown-management', name: 'Dropdown Management', element: DropdownManagement },
   { path: '/forms/select', name: 'Select', element: Select },
   { path: '/forms/checks-radios', name: 'Checks & Radios', element: ChecksRadios },
   { path: '/forms/range', name: 'Range', element: Range },

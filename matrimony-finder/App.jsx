@@ -7,6 +7,7 @@ import { HomeFooter, ProfileFooter } from './components/Footer';
 import HomePage from './components/HomePage';
 import ProfilePage from './components/ProfilePage';
 import LoginPage from './components/LoginPage';
+import UserRegistrationPage from './components/UserRegistrationPage';
 import AboutUsPage from './components/AboutUsPage';
 import ContactPage from './components/ContactPage';
 import WishlistPage from './components/WishlistPage';
@@ -21,6 +22,7 @@ const App = () => {
   };
   const navigateToHome = () => setCurrentPage('home');
   const navigateToLogin = () => setCurrentPage('login');
+  const navigateToRegister = () => setCurrentPage('register');
   const navigateToAbout = () => setCurrentPage('about');
   const navigateToContact = () => setCurrentPage('contact');
   const navigateToWishlist = () => setCurrentPage('wishlist');
@@ -51,7 +53,8 @@ const App = () => {
         <main className="flex-grow">
           {currentPage === 'home' && <HomePage onNavigateToProfile={navigateToProfile} />}
           {currentPage === 'profile' && <ProfilePage selectedUserId={selectedUserId} onNavigateToLogin={navigateToLogin} />}
-          {currentPage === 'login' && <LoginPage />}
+          {currentPage === 'login' && <LoginPage onNavigateToRegister={navigateToRegister} />}
+          {currentPage === 'register' && <UserRegistrationPage onNavigateToLogin={navigateToLogin} />}
           {currentPage === 'about' && <AboutUsPage />}
           {currentPage === 'contact' && <ContactPage />}
           {currentPage === 'wishlist' && <WishlistPage onNavigateToProfile={navigateToProfile} onNavigateToLogin={navigateToLogin} />}

@@ -37,7 +37,7 @@ const ChatIcon = ({ className }) => (
 );
 
 const FeaturedProfiles = ({ onNavigateToProfile }) => {
-  const [currentIndex, setCurrentIndex] = useState(2);
+  const [currentIndex, setCurrentIndex] = useState(3);
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [wishlistItems, setWishlistItems] = useState(new Set());
@@ -47,7 +47,7 @@ const FeaturedProfiles = ({ onNavigateToProfile }) => {
     const fetchProfiles = async () => {
       try {
         const data = await userAPI.getAllUsers();
-        const formattedProfiles = data.slice(0, 6).map((user) => ({
+        const formattedProfiles = data.slice(0, 7).map((user) => ({
           id: user.userId || user.id,
           name: user.fullName,
           age:
@@ -161,9 +161,9 @@ const FeaturedProfiles = ({ onNavigateToProfile }) => {
               <div
                 className="flex transition-transform duration-500 ease-out"
                 style={{
-                  transform: `translateX(calc(-${
-                    currentIndex * (100 / 5)
-                  }% + 40% - ${100 / 5 / 2}%))`,
+                  transform: window.innerWidth >= 1024 
+                    ? `translateX(calc(-${currentIndex * 20}% + 40% - 10%))` 
+                    : `translateX(-${currentIndex * 50}%)`,
                 }}
               >
                 {profiles.map((profile, index) => (
@@ -260,12 +260,12 @@ const FeaturedProfiles = ({ onNavigateToProfile }) => {
               ></button>
             ))}
           </div>
-          <a
+          {/* <a
             href="#"
             className="mt-8 inline-block text-primary font-semibold hover:underline"
           >
             View all
-          </a>
+          </a> */}
         </div>
       </div>
     </section>
