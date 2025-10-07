@@ -110,7 +110,7 @@ export class MailService {
         <p class="description">Thank you for registering with us. Your account has been successfully created.</p>
         <div class="password-box">Your Password: ${code}</div>
         <p class="description">You can now access your dashboard and start exploring all the features of our matrimony service.</p>
-        <a href="#" class="btn">Get Started</a>
+        <a href="http://195.35.22.221:4052/" class="btn" style="color: #FFFFFF;">Get Started</a>
       </div>
       <div class="footer">
         <p>&copy; 2024 Matrimony. All rights reserved.</p>
