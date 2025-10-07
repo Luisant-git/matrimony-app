@@ -74,3 +74,11 @@ export const userAPI = {
       body: JSON.stringify({ userId, profileId }),
     }),
 };
+
+export const contactAPI = {
+  sendMessage: (contactData) => 
+    apiCall('/mail/contact', {
+      method: 'POST',
+      body: JSON.stringify(contactData),
+    }),
+};

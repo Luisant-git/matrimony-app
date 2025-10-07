@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import breadcrumbImage from '../assets/breadcrumb.png';
+import { contactAPI } from '../utils/api';
+import { toast } from 'react-toastify';
 
 const PageHero = ({ title, breadcrumb }) => (
     <section className="relative bg-cover bg-center py-20" style={{ backgroundImage: `url(${breadcrumbImage})` }}>
@@ -16,11 +18,33 @@ const PhoneIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w
 const MailIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>;
 
 const ContactPage = () => {
+    const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const contactInfo = [
         { icon: <LocationPinIcon />, title: 'Our Location', details: '10221 Salem, Tamil Nadu, India' },
         { icon: <PhoneIcon />, title: 'Call Us', details: '(+99) 012345678' },
         { icon: <MailIcon />, title: 'Email Us', details: 'matrimony@gmail.com' },
     ];
+
+    const handleInputChange = (e) => {
+        setFormData({ ...formData, [e.target.id]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        
+        try {
+            await contactAPI.sendMessage(formData);
+            toast.success('Message sent successfully!');
+            setFormData({ name: '', email: '', subject: '', message: '' });
+        } catch (error) {
+            toast.error('Failed to send message. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
     return (
         <div className="bg-white">
             <PageHero title="Contact Us" breadcrumb="Home / Contact" />
@@ -44,34 +68,34 @@ const ContactPage = () => {
                             ))}
                              {/* <div className="pt-4">
                                 <img src="https://i.imgur.com/2s0sJbM.png" alt="Map" className="rounded-lg shadow-md w-full" />
-                            </div> */}
+                            </div> */}  
                         </div>
 
                         {/* Contact Form */}
                         <div className="lg:col-span-2 bg-gray-50 p-8 rounded-2xl shadow-lg">
                              <h2 className="text-2xl font-bold text-gray-800 mb-6">Send Us a Message</h2>
-                             <form className="space-y-6">
+                             <form className="space-y-6" onSubmit={handleSubmit}>
                                 <div className="grid sm:grid-cols-2 gap-6">
                                     <div>
                                         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                                        <input type="text" id="name" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none" placeholder="John Doe" />
+                                        <input type="text" id="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none" placeholder="John Doe" required />
                                     </div>
                                     <div>
                                         <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                                        <input type="email" id="email" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none" placeholder="your.email@example.com" />
+                                        <input type="email" id="email" value={formData.email} onChange={handleInputChange} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none" placeholder="your.email@example.com" required />
                                     </div>
                                 </div>
                                 <div>
                                     <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                                    <input type="text" id="subject" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none" placeholder="How can we help?" />
+                                    <input type="text" id="subject" value={formData.subject} onChange={handleInputChange} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none" placeholder="How can we help?" required />
                                 </div>
                                 <div>
                                      <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                                     <textarea id="message" rows={5} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none" placeholder="Your message..."></textarea>
+                                     <textarea id="message" value={formData.message} onChange={handleInputChange} rows={5} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none" placeholder="Your message..." required></textarea>
                                 </div>
                                 <div>
-                                    <button type="submit" className="w-full md:w-auto bg-primary text-white font-bold py-3 px-8 rounded-lg hover:bg-primary-dark transition-colors shadow-lg">
-                                        Send Message
+                                    <button type="submit" disabled={isSubmitting} className="w-full md:w-auto bg-primary text-white font-bold py-3 px-8 rounded-lg hover:bg-primary-dark transition-colors shadow-lg disabled:opacity-50">
+                                        {isSubmitting ? 'Sending...' : 'Send Message'}
                                     </button>
                                 </div>
                              </form>
