@@ -193,8 +193,9 @@ export class UserService {
     const user = await this.prisma.user.findUnique({ where: { mobileNo } });
     if (!user) throw new UnauthorizedException('Invalid credentials');
 
-    // Compare the provided password with the stored password (plain text)
-    if (password !== user.password)
+    // Compare the provided password with the stored hashed password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid)
       throw new UnauthorizedException('Invalid credentials');
 
     // Generate a JWT token

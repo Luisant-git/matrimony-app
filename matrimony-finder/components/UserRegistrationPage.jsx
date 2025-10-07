@@ -165,8 +165,7 @@ const UserRegistrationPage = ({ onNavigateToLogin }) => {
                     weight: parseFloat(dataToSend.weight),
                     userProfile: profileImages,
                     regNo,
-                    profile: 'user',
-                    plainPassword: true
+                    profile: 'user'
                 }),
             });
 
