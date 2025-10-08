@@ -42,6 +42,14 @@ const UserRegistrationPage = ({ onNavigateToLogin }) => {
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
+    const indianStates = [
+        'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 'Haryana',
+        'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
+        'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
+        'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal', 'Delhi', 'Jammu and Kashmir',
+        'Ladakh', 'Lakshadweep', 'Puducherry', 'Andaman and Nicobar Islands', 'Chandigarh', 'Dadra and Nagar Haveli and Daman and Diu'
+    ];
+
     useEffect(() => {
         fetchDropdownData();
     }, []);
@@ -672,15 +680,18 @@ const UserRegistrationPage = ({ onNavigateToLogin }) => {
                             
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">State *</label>
-                                <input
-                                    type="text"
+                                <select
                                     name="state"
                                     value={formData.state}
                                     onChange={handleChange}
                                     required
                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                                    placeholder="Enter state"
-                                />
+                                >
+                                    <option value="">Select State</option>
+                                    {indianStates.map((state, index) => (
+                                        <option key={index} value={state}>{state}</option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
 
