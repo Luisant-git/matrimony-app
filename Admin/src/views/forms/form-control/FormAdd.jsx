@@ -44,6 +44,7 @@ function FormAdd({
   removeProfileImage,
   editJathagam,
   deleteJathagam,
+  indianStates,
 }) {
   const [communitymodal, setCommunityModal] = useState(false)
   const [casteModal, setCasteModal] = useState(false)
@@ -541,16 +542,19 @@ function FormAdd({
               />
             </div>
             <div className="mb-3">
-              <CFormLabel htmlFor="">State</CFormLabel>
-              <CFormInput
+              <CFormLabel htmlFor="state">State</CFormLabel>
+              <CFormSelect
                 name="state"
                 required
                 value={formData.state}
                 onChange={handleChange}
-                type="text"
-                id="State"
-                placeholder="Enter your State"
-              />
+                id="state"
+              >
+                <option value="">Select your State</option>
+                {indianStates?.map((state, index) => (
+                  <option key={index} value={state}>{state}</option>
+                ))}
+              </CFormSelect>
             </div>
 
             <CCard>

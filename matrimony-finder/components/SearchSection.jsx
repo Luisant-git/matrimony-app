@@ -22,7 +22,30 @@ const ChevronDownIcon = () => (
     </svg>
 );
 
+const RasiIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+    </svg>
+);
 
+const NatchathiramIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+    </svg>
+);
+
+
+
+const calculateAge = (dateOfBirth) => {
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+};
 
 const ProfileCard = ({ profile, onNavigate }) => {
     return (
@@ -30,16 +53,19 @@ const ProfileCard = ({ profile, onNavigate }) => {
             <div className="relative">
                 <img src={profile.img} alt={profile.name} className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                <p className="absolute bottom-4 left-4 text-white font-bold text-lg">{profile.name}</p>
+                <div className="absolute bottom-4 left-4 text-white">
+                    <p className="font-bold text-lg">{profile.name}</p>
+                    <p className="text-sm opacity-90">{profile.age} Yr</p>
+                </div>
             </div>
             <div className="p-4 space-y-3">
                 <div className="flex items-center space-x-2 text-gray-600">
-                    <CalendarIcon />
-                    <span>{profile.dob}</span>
+                    <RasiIcon />
+                    <span>{profile.rasi || 'Not specified'}</span>
                 </div>
                 <div className="flex items-center space-x-2 text-gray-600">
-                    <LocationIcon />
-                    <span>{profile.location}</span>
+                    <NatchathiramIcon />
+                    <span>{profile.natchathiram || 'Not specified'}</span>
                 </div>
                 <button 
                     onClick={onNavigate}
@@ -115,8 +141,9 @@ const SearchSection = ({ onNavigateToProfile }) => {
                             {(showAll ? profiles : profiles.slice(0, 6)).map((profile, index) => (
                                 <ProfileCard key={profile.userId || index} profile={{
                                     name: profile.fullName,
-                                    dob: profile.dateOfBirth,
-                                    location: profile.district,
+                                    age: calculateAge(profile.dateOfBirth),
+                                    rasi: profile.jathagam?.[0]?.rasi,
+                                    natchathiram: profile.jathagam?.[0]?.natchathiram,
                                     img: profile.userProfile?.[0] || 'https://picsum.photos/400/600'
                                 }} onNavigate={() => onNavigateToProfile(profile.userId || profile.id)} />
                             ))}
