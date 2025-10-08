@@ -29,7 +29,7 @@ const UserRegistrationPage = ({ onNavigateToLogin }) => {
         kothiramId: '',
         address: '',
         district: '',
-        state: ''
+        state: 'Tamil Nadu'
     });
 
     const [profileImages, setProfileImages] = useState([]);
@@ -42,12 +42,12 @@ const UserRegistrationPage = ({ onNavigateToLogin }) => {
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
-    const indianStates = [
-        'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 'Haryana',
-        'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
-        'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
-        'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal', 'Delhi', 'Jammu and Kashmir',
-        'Ladakh', 'Lakshadweep', 'Puducherry', 'Andaman and Nicobar Islands', 'Chandigarh', 'Dadra and Nagar Haveli and Daman and Diu'
+    const tamilNaduDistricts = [
+        'Ariyalur', 'Chengalpattu', 'Chennai', 'Coimbatore', 'Cuddalore', 'Dharmapuri', 'Dindigul', 'Erode',
+        'Kallakurichi', 'Kanchipuram', 'Kanyakumari', 'Karur', 'Krishnagiri', 'Madurai', 'Mayiladuthurai',
+        'Nagapattinam', 'Namakkal', 'Perambalur', 'Pudukkottai', 'Ramanathapuram', 'Ranipet', 'Salem',
+        'Sivaganga', 'Tenkasi', 'Thanjavur', 'Theni', 'Tirunelveli', 'Tiruchirappalli', 'Tiruppur',
+        'Tiruvallur', 'Tiruvannamalai', 'Thiruvarur', 'Vellore', 'Viluppuram', 'Virudhunagar', 'Nilgiris', 'Others'
     ];
 
     useEffect(() => {
@@ -187,7 +187,7 @@ const UserRegistrationPage = ({ onNavigateToLogin }) => {
                     height: '', weight: '', color: '', income: '',
                     maritalStatus: 'SINGLE', ownHouse: 'true',
                     communityId: '', casteId: '', subCasteId: '', kulamId: '', kothiramId: '',
-                    address: '', district: '', state: ''
+                    address: '', district: '', state: 'Tamil Nadu'
                 });
                 setProfileImages([]);
                 // Redirect to login page after successful registration
@@ -667,31 +667,29 @@ const UserRegistrationPage = ({ onNavigateToLogin }) => {
                         <div className="grid md:grid-cols-2 gap-6">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">District *</label>
-                                <input
-                                    type="text"
+                                <select
                                     name="district"
                                     value={formData.district}
                                     onChange={handleChange}
                                     required
                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                                    placeholder="Enter district"
-                                />
+                                >
+                                    <option value="">Select District</option>
+                                    {tamilNaduDistricts.map((district, index) => (
+                                        <option key={index} value={district}>{district}</option>
+                                    ))}
+                                </select>
                             </div>
                             
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">State *</label>
-                                <select
+                                <input
+                                    type="text"
                                     name="state"
-                                    value={formData.state}
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                                >
-                                    <option value="">Select State</option>
-                                    {indianStates.map((state, index) => (
-                                        <option key={index} value={state}>{state}</option>
-                                    ))}
-                                </select>
+                                    value="Tamil Nadu"
+                                    disabled
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-500"
+                                />
                             </div>
                         </div>
 
