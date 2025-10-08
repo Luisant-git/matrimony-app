@@ -52,6 +52,9 @@ export class UserService {
 
   async findAll() {
     return this.prisma.user.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
       include: {
         siblings: true,
         jathagam: true,

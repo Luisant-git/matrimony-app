@@ -26,7 +26,7 @@ function FormList() {
   const [searchQuery, setSearchQuery] = useState('')
   const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' })
   const [genderFilter, setGenderFilter] = useState('All')
-  const [stateFilter, setStateFilter] = useState('All')
+
   const [districtFilter, setDistrictFilter] = useState('All')
   const [educationFilter, setEducationFilter] = useState('All')
   const [jobTypeFilter, setJobTypeFilter] = useState('All')
@@ -37,8 +37,9 @@ function FormList() {
   const [deactivateReason, setDeactivateReason] = useState('')
   const [deactivateOtherText, setDeactivateOtherText] = useState('')
   const [userToDeactivate, setUserToDeactivate] = useState(null)
-  const [minAge, setMinAge] = useState('')
-  const [maxAge, setMaxAge] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
+
 
   const getAge = (u) => {
     const explicit = Number(u?.age)
@@ -74,12 +75,9 @@ function FormList() {
   const filterData = (
     searchTerm,
     gender,
-    state,
     district,
     education,
     jobType,
-    minAgeVal,
-    maxAgeVal,
   ) => {
     const filtered = userData.filter((user) => {
       const normalizedSearchTerm = searchTerm.trim().toLowerCase()
@@ -91,30 +89,23 @@ function FormList() {
         user.mobileNo.includes(normalizedSearchTerm)
 
       const matchesGender = gender === 'All' || user.gender === gender
-      const matchesState = state === 'All' || user.state === state
       const matchesDistrict =
         district === 'All' ||
         (user.district && user.district.trim().toLowerCase() === normalizedDistrict)
       const matchesEducation = education === 'All' || user.education === education
       const matchesJobType = jobType === 'All' || user.job_type === jobType
 
-      const age = getAge(user)
-      const minOk = minAgeVal === '' || (age !== null && age >= Number(minAgeVal))
-      const maxOk = maxAgeVal === '' || (age !== null && age <= Number(maxAgeVal))
-      const matchesAge = minOk && maxOk
-
       return (
         matchesSearch &&
         matchesGender &&
-        matchesState &&
         matchesDistrict &&
         matchesEducation &&
-        matchesJobType &&
-        matchesAge
+        matchesJobType
       )
     })
 
     setFilteredData(filtered)
+    setCurrentPage(1)
   }
 
   const handleSearch = (e) => {
@@ -123,12 +114,9 @@ function FormList() {
     filterData(
       value,
       genderFilter,
-      stateFilter,
       districtFilter,
       educationFilter,
       jobTypeFilter,
-      minAge,
-      maxAge,
     )
   }
 
@@ -137,49 +125,19 @@ function FormList() {
     switch (filterType) {
       case 'gender':
         setGenderFilter(value)
-        filterData(searchQuery, value, stateFilter, districtFilter, educationFilter, jobTypeFilter)
-        break
-      case 'state':
-        setStateFilter(value)
-        filterData(searchQuery, genderFilter, value, districtFilter, educationFilter, jobTypeFilter)
+        filterData(searchQuery, value, districtFilter, educationFilter, jobTypeFilter)
         break
       case 'district':
         setDistrictFilter(value)
-        filterData(searchQuery, genderFilter, stateFilter, value, educationFilter, jobTypeFilter)
+        filterData(searchQuery, genderFilter, value, educationFilter, jobTypeFilter)
         break
       case 'education':
         setEducationFilter(value)
-        filterData(searchQuery, genderFilter, stateFilter, districtFilter, value, jobTypeFilter)
+        filterData(searchQuery, genderFilter, districtFilter, value, jobTypeFilter)
         break
       case 'jobType':
         setJobTypeFilter(value)
-        filterData(searchQuery, genderFilter, stateFilter, districtFilter, educationFilter, value)
-        break
-      case 'minAge':
-        setMinAge(value)
-        filterData(
-          searchQuery,
-          genderFilter,
-          stateFilter,
-          districtFilter,
-          educationFilter,
-          jobTypeFilter,
-          value,
-          maxAge,
-        )
-        break
-      case 'maxAge':
-        setMaxAge(value)
-        filterData(
-          searchQuery,
-          genderFilter,
-          stateFilter,
-          districtFilter,
-          educationFilter,
-          jobTypeFilter,
-          minAge,
-          value,
-        )
+        filterData(searchQuery, genderFilter, districtFilter, educationFilter, value)
         break
       default:
         break
@@ -200,6 +158,7 @@ function FormList() {
       }
     })
     setFilteredData(sortedData)
+    setCurrentPage(1)
   }
 
   const handleViewDetails = (user) => {
@@ -246,7 +205,7 @@ function FormList() {
     <div>
       <CCard>
         <CCardBody>
-          <CRow>
+          <CRow className="justify-content-between">
             <CCol xs="12" md="6" lg="3">
               <input
                 type="text"
@@ -269,45 +228,9 @@ function FormList() {
               </select>
             </CCol>
 
-            {/* Age range in the same row, split evenly */}
-            <CCol xs="12" md="6" lg="2">
-              <CRow className="g-2">
-                <CCol xs="6">
-                  <input
-                    type="number"
-                    min={0}
-                    placeholder="Min"
-                    title="Min Age"
-                    value={minAge}
-                    onChange={(e) => handleFilterChange('minAge', e.target.value)}
-                    className="form-control"
-                  />
-                </CCol>
-                <CCol xs="6">
-                  <input
-                    type="number"
-                    min={0}
-                    placeholder="Max"
-                    title="Max Age"
-                    value={maxAge}
-                    onChange={(e) => handleFilterChange('maxAge', e.target.value)}
-                    className="form-control"
-                  />
-                </CCol>
-              </CRow>
-            </CCol>
 
-            <CCol xs="12" md="6" lg="2">
-              <select
-                className="form-select"
-                value={stateFilter}
-                onChange={(e) => handleFilterChange('state', e.target.value)}
-              >
-                <option value="All">All States</option>
-                <option value="Tamil Nadu">Tamil Nadu</option>
-                <option value="Kerala">Kerala</option>
-              </select>
-            </CCol>
+
+
 
             <CCol xs="12" md="6" lg="2">
               <select
@@ -357,8 +280,8 @@ function FormList() {
               </select>
             </CCol>
 
-            <CCol xs="6" md="6" lg="1" className="d-flex">
-              <Link to="/forms/form-control" className="ms-auto">
+            <CCol xs="6" md="6" lg="1" className="d-flex ms-auto">
+              <Link to="/forms/form-control">
                 <button className="btn btn-success text-white w-100">Add</button>
               </Link>
             </CCol>
@@ -375,13 +298,15 @@ function FormList() {
                 <th onClick={() => handleSort('fullName')}>Name</th>
                 <th onClick={() => handleSort('email')}>Email</th>
                 <th onClick={() => handleSort('gender')}>Gender</th>
-                <th onClick={() => handleSort('state')}>State</th>
+
                 <th onClick={() => handleSort('district')}>District</th>
                 <th>Actions</th>
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              {filteredData.map((user) => (
+              {filteredData
+                .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                .map((user) => (
                 <CTableRow key={user.userId}>
                   <CTableDataCell>
                     <img
@@ -395,7 +320,7 @@ function FormList() {
                   <CTableDataCell>{user.fullName}</CTableDataCell>
                   <CTableDataCell>{user.email}</CTableDataCell>
                   <CTableDataCell>{user.gender}</CTableDataCell>
-                  <CTableDataCell>{user.state}</CTableDataCell>
+
                   <CTableDataCell>{user.district}</CTableDataCell>
                   <CTableDataCell>
                     <CButton color="primary" onClick={() => handleViewDetails(user)}>
@@ -439,6 +364,30 @@ function FormList() {
               ))}
             </CTableBody>
           </CTable>
+          
+          {/* Pagination */}
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <div>
+              Showing {Math.min((currentPage - 1) * itemsPerPage + 1, filteredData.length)} to {Math.min(currentPage * itemsPerPage, filteredData.length)} of {filteredData.length} entries
+            </div>
+            <div>
+              <button 
+                className="btn btn-outline-primary me-2" 
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(currentPage - 1)}
+              >
+                Previous
+              </button>
+              <span className="me-2">Page {currentPage} of {Math.ceil(filteredData.length / itemsPerPage)}</span>
+              <button 
+                className="btn btn-outline-primary" 
+                disabled={currentPage === Math.ceil(filteredData.length / itemsPerPage)}
+                onClick={() => setCurrentPage(currentPage + 1)}
+              >
+                Next
+              </button>
+            </div>
+          </div>
         </CCardBody>
       </CCard>
 
