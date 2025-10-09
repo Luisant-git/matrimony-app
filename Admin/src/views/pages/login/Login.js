@@ -108,8 +108,7 @@ const navigate=useNavigate()
                   <div>
                     {/* <h2>Sign up</h2> */}
                     <p className='mt-3'>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                      tempor incididunt ut labore et dolore magna aliqua.
+                      Celebrate every moment with us — sign in to plan, manage, and relive your beautiful memories.
                     </p>
                     {/* <Link >
                       <CButton color="primary" className="mt-3" active tabIndex={-1}>
