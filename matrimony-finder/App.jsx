@@ -45,6 +45,7 @@ const App = () => {
         <Header 
           onNavigateHome={navigateToHome} 
           onNavigateToLogin={navigateToLogin}
+          onNavigateToRegister={navigateToRegister}
           onNavigateToAbout={navigateToAbout}
           onNavigateToContact={navigateToContact}
           onNavigateToWishlist={navigateToWishlist}
