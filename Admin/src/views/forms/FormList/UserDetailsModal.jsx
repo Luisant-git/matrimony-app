@@ -37,7 +37,7 @@ const UserDetailsModal = ({ modalVisible, setModalVisible, selectedUser }) => {
             <p><FontAwesomeIcon icon={faEnvelope} className="me-2" /><strong>Email:</strong> {selectedUser.email}</p>
             <p><FontAwesomeIcon icon={faPhone} className="me-2" /><strong>Mobile:</strong> {selectedUser.mobileNo}</p>
             <p><FontAwesomeIcon icon={faVenusMars} className="me-2" /><strong>Gender:</strong> {selectedUser.gender}</p>
-            <p><FontAwesomeIcon icon={faBirthdayCake} className="me-2" /><strong>Date of Birth:</strong> {selectedUser.dateOfBirth}</p>
+            <p><FontAwesomeIcon icon={faBirthdayCake} className="me-2" /><strong>Date of Birth:</strong> {formatDOB(selectedUser.dateOfBirth)}</p>
             <p><FontAwesomeIcon icon={faMapMarkerAlt} className="me-2" /><strong>Birth Place:</strong> {selectedUser.birthPlace || "Not Provided"}</p>
           </CCol>
           <CCol xs="12" md="6">
@@ -96,5 +96,24 @@ const UserDetailsModal = ({ modalVisible, setModalVisible, selectedUser }) => {
     </CModal>
   );
 };
+  
+  // Format date as DD/MM/YYYY
+  function formatDOB(dateStr) {
+    if (!dateStr) return '';
+    // If already in DD/MM/YYYY
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) return dateStr;
+    // If in YYYY-MM-DD
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      const [year, month, day] = dateStr.split('-');
+      return `${day}/${month}/${year}`;
+    }
+    // If in DD/MM/YY
+    if (/^\d{2}\/\d{2}\/\d{2}$/.test(dateStr)) {
+      const [dd, mm, yy] = dateStr.split('/');
+      const yyyy = parseInt(yy, 10) < 50 ? '20' + yy : '19' + yy;
+      return `${dd}/${mm}/${yyyy}`;
+    }
+    return dateStr;
+  }
 
 export default UserDetailsModal;
