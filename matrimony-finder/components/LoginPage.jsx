@@ -140,7 +140,7 @@ const LoginPage = ({ onNavigateToRegister }) => {
                                     <button
                                         type="button"
                                         onClick={onNavigateToRegister}
-                                        className="font-medium text-primary hover:text-primary-dark"
+                                        className="font-medium text-primary hover:text-primary-dark text-xl"
                                     >
                                         Register here
                                     </button>
