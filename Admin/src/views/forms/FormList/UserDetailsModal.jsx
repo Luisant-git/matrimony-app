@@ -46,7 +46,7 @@ const UserDetailsModal = ({ modalVisible, setModalVisible, selectedUser }) => {
             <p><strong>Address:</strong> {selectedUser.address}</p>
             <p><strong>Education:</strong> {selectedUser.education}</p>
             <p><FontAwesomeIcon icon={faBuilding} className="me-2" /><strong>Job Type:</strong> {selectedUser.job_type}</p>
-            <p><strong>Organization:</strong> {selectedUser.organization}</p>
+            <p><strong>Organization/Company:</strong> {selectedUser.organization}</p>
           </CCol>
         </CRow>
         <CRow>
