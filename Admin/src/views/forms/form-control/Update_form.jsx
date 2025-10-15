@@ -347,7 +347,13 @@ const Update_form = () => {
       )
       console.log('Response:', response.data)
 
-      toast.success('Registration User successful!')
+      toast.success('User updated successfully!')
+      
+      // Delay navigation to allow toast to show
+      setTimeout(() => {
+        navigate('/forms/List')
+      }, 1500)
+      
       setFormData({
         regNo: '',
         fullName: '',
@@ -381,7 +387,6 @@ const Update_form = () => {
         siblings: [], // Clear siblings
         jathagam: [], // Clear jathagam
       })
-      navigate('/forms/List')
       setSiblings([])
       setJathagam(null)
       setProfileImages([])
@@ -495,7 +500,17 @@ const Update_form = () => {
           updateJathagam={updateJathagam}
         />
       </CCol>
-      <ToastContainer />
+      <ToastContainer 
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </CRow>
   )
 }
