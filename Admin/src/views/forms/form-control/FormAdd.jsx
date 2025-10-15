@@ -673,6 +673,7 @@ function FormAdd({
             <div className="mb-3 mt-3">
               <CButton color="primary" type="submit">
                 Submit
+
               </CButton>
             </div>
           </CForm>
@@ -732,4 +733,4 @@ function FormAdd({
   )
 }
 
-export default FormAdd
+export default FormAdd ;
