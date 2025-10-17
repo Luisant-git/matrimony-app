@@ -208,8 +208,7 @@ const Update_form = () => {
       uploadJathakam: item.uploadJathakam || null,
       natchathiram: item.natchathiram || '',
       lagnam: item.lagnam || '',
-      dosham: item.dosham || '',
-      _editingIndex: index,
+      dosham: item.dosham || ''
     })
     setModalVisibles(true)
   }
