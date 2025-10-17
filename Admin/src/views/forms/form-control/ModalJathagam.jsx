@@ -43,9 +43,10 @@ function ModalJathagam({
   return (
     <div>
       <CModal visible={modalVisibles} onClose={() => setModalVisibles(false)}>
-        <CModalHeader>Horoscope Details - Add Jathagam</CModalHeader>
+        <CModalHeader>Add Jathagam</CModalHeader>
         <CModalBody>
           <div className="p-3">
+            <h5 className="mb-3">Horoscope Details</h5>
             <CForm>
               <div className="container-fluid">
                 <div className="row mb-2 align-items-center">

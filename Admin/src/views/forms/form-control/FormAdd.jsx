@@ -686,50 +686,58 @@ function FormAdd({
                 )}
               </CCardBody>
             </CCard>
-            <CCard className="mt-3">
-              <CCardHeader>
-                <h5>Jathagam Details</h5>
-                {!jathagam && (
-                  <CButton color="primary" size="sm" onClick={() => setModalVisibles(true)}>
-                    Add Jathagam
-                  </CButton>
-                )}
-              </CCardHeader>
-              <CCardBody>
-                {jathagam && jathagam.length > 0 ? (
-                  jathagam.map((item, index) => (
-                    <CListGroup key={index} className="mb-3">
-                      <CListGroupItem>
-                        <strong>Rasi:</strong> {item.rasi}
-                      </CListGroupItem>
-                      <CListGroupItem>
-                        <strong>Natchathiram:</strong> {item.natchathiram}
-                      </CListGroupItem>
-                      <CListGroupItem>
-                        <strong>Lagnam:</strong> {item.lagnam}
-                      </CListGroupItem>
-                      <CListGroupItem>
-                        <strong>Dosham:</strong> {item.dosham ? 'Yes' : 'No'}
-                      </CListGroupItem>
-                      <CListGroupItem>
-                        <strong>Uploaded Jathakam:</strong> {item.uploadJathakam}
-                      </CListGroupItem>
-                      <CListGroupItem className="d-flex gap-2">
-                        <CButton
-                          color="warning"
-                          size="sm"
-                          onClick={() => editJathagam && editJathagam(index)}
-                        >
-                          Edit
-                        </CButton>
-                      </CListGroupItem>
-                    </CListGroup>
-                  ))
-                ) : (
-                  <p className="text-muted">No Jathagam added yet.</p>
-                )}
-              </CCardBody>
-              </CCard>
+              </AccordionDetails>
+            </Accordion>
+
+            {/* Jathagam moved out as its own top-level accordion */}
+            <Accordion className="mb-3">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                Jathagam Details / ஜாதகம் விவரங்கள்
+              </AccordionSummary>
+              <AccordionDetails>
+                <CCard className="jathagam-card">
+                  <CCardHeader>
+                    {!jathagam && (
+                      <CButton className="btn-jathagam btn-sm" type="button" onClick={() => setModalVisibles(true)}>
+                        Add Jathagam
+                      </CButton>
+                    )}
+                  </CCardHeader>
+                  <CCardBody>
+                    {jathagam && jathagam.length > 0 ? (
+                      jathagam.map((item, index) => (
+                        <CListGroup key={index} className="mb-3">
+                          <CListGroupItem>
+                            <strong>Rasi:</strong> {item.rasi}
+                          </CListGroupItem>
+                          <CListGroupItem>
+                            <strong>Natchathiram:</strong> {item.natchathiram}
+                          </CListGroupItem>
+                          <CListGroupItem>
+                            <strong>Lagnam:</strong> {item.lagnam}
+                          </CListGroupItem>
+                          <CListGroupItem>
+                            <strong>Dosham:</strong> {item.dosham ? 'Yes' : 'No'}
+                          </CListGroupItem>
+                          <CListGroupItem>
+                            <strong>Uploaded Jathakam:</strong> {item.uploadJathakam}
+                          </CListGroupItem>
+                          <CListGroupItem className="d-flex gap-2">
+                            <CButton
+                              color="warning"
+                              size="sm"
+                              onClick={() => editJathagam && editJathagam(index)}
+                            >
+                              Edit
+                            </CButton>
+                          </CListGroupItem>
+                        </CListGroup>
+                      ))
+                    ) : (
+                      <p className="text-muted">No Jathagam added yet.</p>
+                    )}
+                  </CCardBody>
+                </CCard>
               </AccordionDetails>
             </Accordion>
             {/* Submit Button */}

@@ -66,3 +66,26 @@ details .mb-3 {
 	overflow: auto;
 }
 
+/* Jathagam card styles */
+.jathagam-card {
+	border-radius: 6px;
+}
+.jathagam-card .card-header,
+.jathagam-card .card-header h5,
+.jathagam-card > .card-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.75rem 1rem;
+}
+.jathagam-card .btn-jathagam {
+	background: linear-gradient(90deg,#6f42c1,#7b61ff);
+	border: none;
+	color: #fff;
+	padding: 6px 12px;
+	border-radius: 6px;
+}
+.jathagam-card .card-header + .card-body {
+	border-top: 1px solid rgba(0,0,0,0.06);
+}
+
