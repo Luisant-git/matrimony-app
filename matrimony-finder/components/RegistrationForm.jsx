@@ -86,7 +86,7 @@ const RegistrationForm = () => {
 
     return (
         <div className="bg-white p-4 sm:p-6 md:p-8 rounded-3xl shadow-2xl w-full">
-            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-primary text-center mb-4 sm:mb-6">Quick Registered</h3>
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-primary text-center mb-4 sm:mb-6">Quick Register</h3>
 
             <form className="space-y-3 sm:space-y-4" onSubmit={handleSubmit}>
                 <div>
