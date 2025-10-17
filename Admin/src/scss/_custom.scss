@@ -1,1 +1,68 @@
 // Here you can add other styles
+
+/* Style for details/summary accordions used in FormAdd.jsx */
+details {
+	border: none;
+	padding: 0.25rem 0;
+}
+
+/* Hide default marker and move a custom caret to the right side */
+summary {
+	list-style: none;
+	cursor: pointer;
+	padding: 0.5rem 0.75rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	color: #333;
+}
+
+/* Remove default triangle in Firefox */
+summary::-webkit-details-marker {
+	display: none;
+}
+summary::marker {
+	display: none;
+}
+
+/* Add custom right-side caret */
+summary::after {
+	content: '\25B6'; /* right-pointing triangle */
+	transform: rotate(0deg);
+	transition: transform 200ms ease, color 200ms ease;
+	color: #333;
+	margin-left: 1rem;
+}
+
+/* When open, rotate caret downwards */
+details[open] > summary::after {
+	transform: rotate(90deg);
+	color: #6f42c1; /* accent color */
+}
+
+/* Section heading gradient (reuse from finder app) */
+.section-heading {
+	font-weight: 600;
+	background: linear-gradient(90deg, #6f42c1, #007bff);
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+/* Smoothly animate details content height and enable internal scrolling when long */
+details > *:not(summary) {
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 260ms ease;
+}
+
+details[open] > *:not(summary) {
+	max-height: 1200px; /* large enough to expand */
+}
+
+/* Make inner content scrollable if it grows beyond reasonable height */
+details .mb-3 {
+	max-height: 420px;
+	overflow: auto;
+}
+

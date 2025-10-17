@@ -5,7 +5,7 @@ function ModalSibilings({addSibling,handleInputChange,newSibling,setModalVisible
   return (
     <div>
              <CModal visible={modalVisible} onClose={() => setModalVisible(false)}>
-          <CModalHeader>Add New Sibling</CModalHeader>
+          <CModalHeader>Family Details - Add Sibling</CModalHeader>
           <CModalBody>
             <CForm>
               {/* Name */}
@@ -13,7 +13,7 @@ function ModalSibilings({addSibling,handleInputChange,newSibling,setModalVisible
                 <CFormInput
                   type="text"
                   name="name"
-                  placeholder="Enter sibling name"
+                  placeholder="Sibling name"
                   value={newSibling.name}
                   onChange={handleInputChange}
                   required

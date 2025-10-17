@@ -12,6 +12,10 @@ import {
   CListGroupItem,
 } from '@coreui/react'
 import React, { useState } from 'react'
+import Accordion from '@mui/material/Accordion'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ModalCommunity from './ModalCommunity'
 import CatesModal from './CatesModal'
 import ModalSubCaste from './ModalSubCaste'
@@ -54,155 +58,231 @@ function FormAdd({
   const [manageModal, setManageModal] = useState({ visible: false, type: '', data: [], parentData: [] })
 
   return (
-    <div>
-      <CCard className="mb-4">
+    <div className="d-flex justify-content-center">
+      <div className="w-100" style={{ maxWidth: 900 }}>
+        <CCard className="mb-4">
         <CCardHeader>
           <strong>Profile Form</strong>
         </CCardHeader>
         <CCardBody>
           <CForm onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <CFormLabel htmlFor="fullName">Full Name</CFormLabel>
-              <CFormInput
-                name="fullName"
-                required
-                value={formData.fullName}
-                onChange={handleChange}
-                type="text"
-                id="fullName"
-                placeholder="Enter your full name"
-              />
-            </div>
-
-            {/* Mobile No */}
-            <div className="mb-3">
-              <CFormLabel htmlFor="mobileNo">Mobile No</CFormLabel>
-              <CFormInput
-                name="mobileNo"
-                required
-                value={formData.mobileNo}
-                onChange={handleChange}
-                type="text"
-                id="mobileNo"
-                placeholder="Enter your mobile number"
-              />
-            </div>
-            {/* Email */}
-            <div className="mb-3">
-              <CFormLabel htmlFor="email">Email address</CFormLabel>
-              <CFormInput
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                type="email"
-                id="email"
-                placeholder="name@example.com"
-              />
-            </div>
-
-            {/* Profile Image Upload */}
-            <div className="mb-3">
-              <CFormLabel htmlFor="profileImage">Profile Images</CFormLabel>
-              <CFormInput
-                type="file"
-                id="profileImage"
-                accept="image/*"
-                multiple
-                // required
-                onChange={handleImageChange}
-              />
-              {profileImages.length > 0 && (
-                <div className="mt-2 d-flex flex-wrap">
-                  {profileImages.map((image, index) => (
-                    <div
-                      key={index}
-                      style={{ position: 'relative', width: 100, height: 100, margin: 5 }}
-                    >
-                      <img
-                        src={image}
-                        alt={`Profile Preview ${index + 1}`}
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                          borderRadius: 4,
-                        }}
-                      />
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-danger"
-                        style={{ position: 'absolute', top: 4, right: 4, padding: '2px 6px' }}
-                        onClick={() => removeProfileImage && removeProfileImage(index)}
-                      >
-                        X
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Gender */}
-            <div className="mb-3">
-              <CFormLabel htmlFor="gender">Gender</CFormLabel>
-              <select
-                name="gender"
-                value={formData.gender}
-                required
-                onChange={handleChange}
-                id="gender"
-                className="form-control"
+            <Accordion defaultExpanded className="mb-3">
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="personal-content"
+                id="personal-header"
+                className="section-heading"
               >
-                <option value="MALE">Male</option>
-                <option value="FEMALE">Female</option>
-                {/* <option value="OTHER">Other</option> */}
-              </select>
-            </div>
+                Personal Details / தனிப்பட்ட விவரங்கள்
+              </AccordionSummary>
+              <AccordionDetails>
+              <div className="row g-3">
+                <div className="col-md-6">
+                  <CFormLabel htmlFor="fullName">Full Name</CFormLabel>
+                  <CFormInput
+                    name="fullName"
+                    required
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    type="text"
+                    id="fullName"
+                    placeholder="Enter your full name"
+                  />
+                </div>
 
-            {/* Date of Birth */}
-            <div className="mb-3">
-              <CFormLabel htmlFor="dateOfBirth">Date of Birth</CFormLabel>
-              <CFormInput
-                name="dateOfBirth"
-                value={formData.dateOfBirth}
-                required
-                onChange={handleChange}
-                type="date"
-                id="dateOfBirth"
-                placeholder="Select your date of birth"
-              />
-            </div>
+                <div className="col-md-6">
+                  <CFormLabel htmlFor="mobileNo">Mobile Number</CFormLabel>
+                  <CFormInput
+                    name="mobileNo"
+                    required
+                    value={formData.mobileNo}
+                    onChange={handleChange}
+                    type="text"
+                    id="mobileNo"
+                    placeholder="Enter mobile number"
+                  />
+                </div>
 
-            {/* Birth Time */}
-            {/* Birth Time */}
-            <div className="mb-3">
-              <CFormLabel htmlFor="birthTime">Birth Time</CFormLabel>
-              <CFormInput
-                name="birthTime"
-                value={formData.birthTime}
-                onChange={handleChange}
-                required
-                type="time"
-                id="birthTime"
-                placeholder="Enter your birth time"
-              />
-            </div>
+                <div className="col-md-6">
+                  <CFormLabel htmlFor="email">Email</CFormLabel>
+                  <CFormInput
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    type="email"
+                    id="email"
+                    placeholder="Enter email address"
+                  />
+                </div>
 
-            {/* Birth Place */}
-            <div className="mb-3">
-              <CFormLabel htmlFor="birthPlace">Birth Place</CFormLabel>
-              <CFormInput
-                required
-                type="text"
-                name="birthPlace"
-                value={formData.birthPlace}
-                onChange={handleChange}
-                id="birthPlace"
-                placeholder="Enter your birth place"
-              />
-            </div>
+                <div className="col-md-6">
+                  <CFormLabel htmlFor="gender">Gender</CFormLabel>
+                  <select
+                    name="gender"
+                    value={formData.gender}
+                    required
+                    onChange={handleChange}
+                    id="gender"
+                    className="form-control"
+                  >
+                    <option value="MALE">Male</option>
+                    <option value="FEMALE">Female</option>
+                  </select>
+                </div>
 
+                <div className="col-md-6">
+                  <CFormLabel htmlFor="dateOfBirth">Date of Birth</CFormLabel>
+                  <CFormInput
+                    name="dateOfBirth"
+                    value={formData.dateOfBirth}
+                    required
+                    onChange={handleChange}
+                    type="date"
+                    id="dateOfBirth"
+                    placeholder="Select your date of birth"
+                  />
+                </div>
+
+                <div className="col-md-6">
+                  <CFormLabel htmlFor="birthTime">Birth Time</CFormLabel>
+                  <CFormInput
+                    name="birthTime"
+                    value={formData.birthTime}
+                    onChange={handleChange}
+                    required
+                    type="time"
+                    id="birthTime"
+                    placeholder="Enter your birth time"
+                  />
+                </div>
+
+                <div className="col-md-6">
+                  <CFormLabel htmlFor="birthPlace">Birth Place</CFormLabel>
+                  <CFormInput
+                    required
+                    type="text"
+                    name="birthPlace"
+                    value={formData.birthPlace}
+                    onChange={handleChange}
+                    id="birthPlace"
+                    placeholder="Enter your birth place"
+                  />
+                </div>
+
+                <div className="col-md-6">
+                  <CFormLabel htmlFor="maritalStatus">Marital Status</CFormLabel>
+                  <select
+                    name="maritalStatus"
+                    value={formData.maritalStatus}
+                    onChange={handleChange}
+                    required
+                    id="maritalStatus"
+                    className="form-control"
+                  >
+                    <option value="SINGLE">Single</option>
+                    <option value="MARRIED">Married</option>
+                    <option value="DIVORCED">Divorced</option>
+                    <option value="OTHERS">Others</option>
+                  </select>
+                </div>
+
+                <div className="col-md-6">
+                  <CFormLabel htmlFor="height">Height (In Feet / Inches)</CFormLabel>
+                  <CFormInput
+                    name="height"
+                    value={formData.height}
+                    required
+                    onChange={handleChange}
+                    type="number"
+                    step="0.1"
+                    id="height"
+                    placeholder="Enter your height (e.g., 5.5)"
+                  />
+                </div>
+
+                <div className="col-md-6">
+                  <CFormLabel htmlFor="weight">Weight</CFormLabel>
+                  <CFormInput
+                    name="weight"
+                    value={formData.weight}
+                    required
+                    onChange={handleChange}
+                    type="number"
+                    step="0.1"
+                    id="weight"
+                    placeholder="Enter your weight in KG (e.g., 65.5)"
+                  />
+                </div>
+
+                <div className="col-md-6">
+                  <CFormLabel htmlFor="color">Color / வண்ணம்</CFormLabel>
+                  <CFormSelect
+                    name="color"
+                    value={formData.color}
+                    required
+                    onChange={handleChange}
+                    id="color"
+                  >
+                    <option value="">
+                      Select your color preference / உங்கள் வண்ண விருப்பத்தை தேர்ந்தெடுக்கவும்
+                    </option>
+                    <option value="fair">Fair / வெள்ளை</option>
+                    <option value="light_brown">Light Brown / இளப்பழுப்பு</option>
+                    <option value="medium_brown">Medium Brown / மிதப்பழுப்பு</option>
+                    <option value="dark_brown">Dark Brown / இரண்டிப்பழுப்பு</option>
+                    <option value="black">Black / கறுப்பு</option>
+                  </CFormSelect>
+                </div>
+
+                <div className="col-12">
+                  <CFormLabel htmlFor="profileImage">Profile Images</CFormLabel>
+                  <CFormInput
+                    type="file"
+                    id="profileImage"
+                    accept="image/*"
+                    multiple
+                    // required
+                    onChange={handleImageChange}
+                  />
+                  {profileImages.length > 0 && (
+                    <div className="mt-2 d-flex flex-wrap">
+                      {profileImages.map((image, index) => (
+                        <div
+                          key={index}
+                          style={{ position: 'relative', width: 100, height: 100, margin: 5 }}
+                        >
+                          <img
+                            src={image}
+                            alt={`Profile Preview ${index + 1}`}
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              borderRadius: 4,
+                            }}
+                          />
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-danger"
+                            style={{ position: 'absolute', top: 4, right: 4, padding: '2px 6px' }}
+                            onClick={() => removeProfileImage && removeProfileImage(index)}
+                          >
+                            X
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion className="mb-3">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                Education Details
+              </AccordionSummary>
+              <AccordionDetails>
             <div className="mb-3">
               <CFormLabel htmlFor="caste">Education</CFormLabel>
               <CFormTextarea
@@ -216,8 +296,13 @@ function FormAdd({
               />
             </div>
 
-            {/* Job */}
-
+              </AccordionDetails>
+            </Accordion>
+            <Accordion className="mb-3">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                Job Details
+              </AccordionSummary>
+              <AccordionDetails>
             <div className="mb-3">
               <CFormLabel htmlFor="organization">Type Of Job</CFormLabel>
               <CFormSelect
@@ -259,60 +344,9 @@ function FormAdd({
               />
             </div>
 
-            {/* Height */}
+            {/* Income - moved under Job Details */}
             <div className="mb-3">
-              <CFormLabel htmlFor="height">Height(In Feet / Inches)</CFormLabel>
-              <CFormInput
-                name="height"
-                value={formData.height}
-                required
-                onChange={handleChange}
-                type="number"
-                step="0.1"
-                id="height"
-                placeholder="Enter your height (e.g., 5.5)"
-              />
-            </div>
-
-            {/* Weight */}
-            <div className="mb-3">
-              <CFormLabel htmlFor="weight">Weight</CFormLabel>
-              <CFormInput
-                name="weight"
-                value={formData.weight}
-                required
-                onChange={handleChange}
-                type="number"
-                step="0.1"
-                id="weight"
-                placeholder="Enter your weight in KG (e.g., 65.5)"
-              />
-            </div>
-
-            {/* Color */}
-            <div className="mb-3">
-              <CFormLabel htmlFor="color">Color / வண்ணம்</CFormLabel>
-              <CFormSelect
-                name="color"
-                value={formData.color}
-                required
-                onChange={handleChange}
-                id="color"
-              >
-                <option value="">
-                  Select your color preference / உங்கள் வண்ண விருப்பத்தை தேர்ந்தெடுக்கவும்
-                </option>
-                <option value="fair">Fair / வெள்ளை</option>
-                <option value="light_brown">Light Brown / இளப்பழுப்பு</option>
-                <option value="medium_brown">Medium Brown / மிதப்பழுப்பு</option>
-                <option value="dark_brown">Dark Brown / இரண்டிப்பழுப்பு</option>
-                <option value="black">Black / கறுப்பு</option>
-              </CFormSelect>
-            </div>
-
-            {/* Income */}
-            <div className="mb-3">
-              <CFormLabel htmlFor="income">Income (Per Month)</CFormLabel>
+              <CFormLabel htmlFor="income">Income </CFormLabel>
               <CFormInput
                 name="income"
                 value={formData.income}
@@ -320,28 +354,19 @@ function FormAdd({
                 required
                 type="text"
                 id="income"
-                placeholder="Enter your income Per Month"
+                placeholder="Enter your income "
               />
             </div>
 
-            {/* Marital Status */}
-            <div className="mb-3">
-              <CFormLabel htmlFor="maritalStatus">Marital Status</CFormLabel>
-              <select
-                name="maritalStatus"
-                value={formData.maritalStatus}
-                onChange={handleChange}
-                required
-                id="maritalStatus"
-                className="form-control"
-              >
-                <option value="SINGLE">Single</option>
-                <option value="MARRIED">Married</option>
-                <option value="DIVORCED">Divorced</option>
-                <option value="OTHERS">Others</option>
-              </select>
-            </div>
+            {/* (Marital status moved to Personal Details) */}
 
+              </AccordionDetails>
+            </Accordion>
+            <Accordion className="mb-3">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                Property Details
+              </AccordionSummary>
+              <AccordionDetails>
             {/* Own House */}
             <div className="mb-3">
               <CFormLabel htmlFor="ownHouse">Own House</CFormLabel>
@@ -357,6 +382,13 @@ function FormAdd({
                 <option value="false">No</option>
               </select>
             </div>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion className="mb-3">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                Caste Details
+              </AccordionSummary>
+              <AccordionDetails>
             <CFormLabel htmlFor="organization">Community</CFormLabel>
             <div className="mb-3 d-flex align-item-center justify-content-between gap-2">
               <CFormSelect
@@ -516,79 +548,108 @@ function FormAdd({
               </div>
             </div>
 
-            <h4 className="p-2">Address Details</h4>
-            <div className="mb-3">
-              <CFormLabel htmlFor="address">Address</CFormLabel>
-              <CFormTextarea
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                id="address"
-                required
-                placeholder="Enter your Address"
-                rows={3}
-              />
-            </div>
-            <div className="mb-3">
-              <CFormLabel htmlFor="District">District</CFormLabel>
-              <CFormSelect
-                name="district"
-                required
-                value={formData.district}
-                onChange={handleChange}
-                id="District"
-              >
-                <option value="">Select your District</option>
-                <option value="Ariyalur">Ariyalur</option>
-                <option value="Chengalpattu">Chengalpattu</option>
-                <option value="Chennai">Chennai</option>
-                <option value="Coimbatore">Coimbatore</option>
-                <option value="Cuddalore">Cuddalore</option>
-                <option value="Dharmapuri">Dharmapuri</option>
-                <option value="Dindigul">Dindigul</option>
-                <option value="Erode">Erode</option>
-                <option value="Kallakurichi">Kallakurichi</option>
-                <option value="Kanchipuram">Kanchipuram</option>
-                <option value="Kanyakumari">Kanyakumari</option>
-                <option value="Karur">Karur</option>
-                <option value="Krishnagiri">Krishnagiri</option>
-                <option value="Madurai">Madurai</option>
-                <option value="Mayiladuthurai">Mayiladuthurai</option>
-                <option value="Nagapattinam">Nagapattinam</option>
-                <option value="Namakkal">Namakkal</option>
-                <option value="Perambalur">Perambalur</option>
-                <option value="Pudukkottai">Pudukkottai</option>
-                <option value="Ramanathapuram">Ramanathapuram</option>
-                <option value="Ranipet">Ranipet</option>
-                <option value="Salem">Salem</option>
-                <option value="Sivaganga">Sivaganga</option>
-                <option value="Tenkasi">Tenkasi</option>
-                <option value="Thanjavur">Thanjavur</option>
-                <option value="Theni">Theni</option>
-                <option value="Tirunelveli">Tirunelveli</option>
-                <option value="Tiruchirappalli">Tiruchirappalli</option>
-                <option value="Tiruppur">Tiruppur</option>
-                <option value="Tiruvallur">Tiruvallur</option>
-                <option value="Tiruvannamalai">Tiruvannamalai</option>
-                <option value="Thiruvarur">Thiruvarur</option>
-                <option value="Vellore">Vellore</option>
-                <option value="Viluppuram">Viluppuram</option>
-                <option value="Virudhunagar">Virudhunagar</option>
-                <option value="Nilgiris">Nilgiris</option>
-                <option value="Others">Others</option>
-              </CFormSelect>
-            </div>
-            <div className="mb-3">
-              <CFormLabel htmlFor="state">State</CFormLabel>
-              <CFormInput
-                name="state"
-                value="Tamil Nadu"
-                disabled
-                type="text"
-                id="state"
-              />
-            </div>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion className="mb-3">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                Contact Details / தொடர்பு விவரங்கள்
+              </AccordionSummary>
+              <AccordionDetails>
+              <div className="row g-3">
+                <div className="col-md-6">
+                  <CFormLabel htmlFor="address">Address</CFormLabel>
+                  <CFormTextarea
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    id="address"
+                    required
+                    placeholder="Enter your Address"
+                    rows={3}
+                  />
+                </div>
 
+                <div className="col-md-6">
+                  <CFormLabel htmlFor="District">District</CFormLabel>
+                  <CFormSelect
+                    name="district"
+                    required
+                    value={formData.district}
+                    onChange={handleChange}
+                    id="District"
+                  >
+                    <option value="">Select your District</option>
+                    <option value="Ariyalur">Ariyalur</option>
+                    <option value="Chengalpattu">Chengalpattu</option>
+                    <option value="Chennai">Chennai</option>
+                    <option value="Coimbatore">Coimbatore</option>
+                    <option value="Cuddalore">Cuddalore</option>
+                    <option value="Dharmapuri">Dharmapuri</option>
+                    <option value="Dindigul">Dindigul</option>
+                    <option value="Erode">Erode</option>
+                    <option value="Kallakurichi">Kallakurichi</option>
+                    <option value="Kanchipuram">Kanchipuram</option>
+                    <option value="Kanyakumari">Kanyakumari</option>
+                    <option value="Karur">Karur</option>
+                    <option value="Krishnagiri">Krishnagiri</option>
+                    <option value="Madurai">Madurai</option>
+                    <option value="Mayiladuthurai">Mayiladuthurai</option>
+                    <option value="Nagapattinam">Nagapattinam</option>
+                    <option value="Namakkal">Namakkal</option>
+                    <option value="Perambalur">Perambalur</option>
+                    <option value="Pudukkottai">Pudukkottai</option>
+                    <option value="Ramanathapuram">Ramanathapuram</option>
+                    <option value="Ranipet">Ranipet</option>
+                    <option value="Salem">Salem</option>
+                    <option value="Sivaganga">Sivaganga</option>
+                    <option value="Tenkasi">Tenkasi</option>
+                    <option value="Thanjavur">Thanjavur</option>
+                    <option value="Theni">Theni</option>
+                    <option value="Tirunelveli">Tirunelveli</option>
+                    <option value="Tiruchirappalli">Tiruchirappalli</option>
+                    <option value="Tiruppur">Tiruppur</option>
+                    <option value="Tiruvallur">Tiruvallur</option>
+                    <option value="Tiruvannamalai">Tiruvannamalai</option>
+                    <option value="Thiruvarur">Thiruvarur</option>
+                    <option value="Vellore">Vellore</option>
+                    <option value="Viluppuram">Viluppuram</option>
+                    <option value="Virudhunagar">Virudhunagar</option>
+                    <option value="Nilgiris">Nilgiris</option>
+                    <option value="Others">Others</option>
+                  </CFormSelect>
+                </div>
+
+                <div className="col-md-6">
+                  <CFormLabel htmlFor="email">Email address</CFormLabel>
+                  <CFormInput
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    type="email"
+                    id="email"
+                    placeholder="name@example.com"
+                  />
+                </div>
+
+                <div className="col-md-6">
+                  <CFormLabel htmlFor="state">State</CFormLabel>
+                  <CFormInput
+                    name="state"
+                    value="Tamil Nadu"
+                    disabled
+                    type="text"
+                    id="state"
+                  />
+                </div>
+              </div>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion className="mb-3">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                Family Details
+              </AccordionSummary>
+              <AccordionDetails>
             <CCard>
               <CCardHeader>
                 <h5>Siblings List</h5>
@@ -668,7 +729,9 @@ function FormAdd({
                   <p className="text-muted">No Jathagam added yet.</p>
                 )}
               </CCardBody>
-            </CCard>
+              </CCard>
+              </AccordionDetails>
+            </Accordion>
             {/* Submit Button */}
             <div className="mb-3 mt-3">
               <CButton color="primary" type="submit">
@@ -678,7 +741,8 @@ function FormAdd({
             </div>
           </CForm>
         </CCardBody>
-      </CCard>
+        </CCard>
+      </div>
 
       <ModalSubCaste
         refresh={refresh}
