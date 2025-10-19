@@ -11,8 +11,11 @@ const RegistrationForm = () => {
     const [captchaInput, setCaptchaInput] = useState('');
     const [isAgreed, setIsAgreed] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [isBlinking, setIsBlinking] = useState(true);
+
+    const BLINK_PERIOD_MS = 10 * 1000; // 10 seconds blinking
+    const FAST_BLINK_INTERVAL_MS = 500; // 0.5s blink speed
 
     const generateCaptcha = () => {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -27,34 +30,40 @@ const RegistrationForm = () => {
         generateCaptcha();
     }, []);
 
+    // Stop blinking after 10 seconds
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsBlinking(false);
+        }, BLINK_PERIOD_MS);
+
+        return () => clearTimeout(timer);
+    }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         const phonePattern = /^\d{10}$/;
         if (!phonePattern.test(phone)) {
             toast.error('Please enter a valid 10-digit phone number.');
             return;
         }
-        
+
         if (captchaInput !== captcha) {
             toast.error('Invalid captcha. Please try again.');
             return;
         }
-        
+
         if (!isAgreed) {
             toast.error('You must agree to the terms and conditions.');
             return;
         }
-        
+
         setLoading(true);
-        setMessage('');
-        
+
         try {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/registration`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     name,
                     number: phone,
@@ -86,242 +95,160 @@ const RegistrationForm = () => {
 
     return (
         <div className="bg-white p-4 sm:p-6 md:p-8 rounded-3xl shadow-2xl w-full">
-            <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-primary text-center mb-4 sm:mb-6">Quick Register</h3>
+            {/* Inline CSS for fast blinking */}
+            <style>{`
+                @keyframes fastBlink {
+                    0% { opacity: 1; }
+                    50% { opacity: 0; }
+                    100% { opacity: 1; }
+                }
+                .fast-blink {
+                    animation: fastBlink ${FAST_BLINK_INTERVAL_MS}ms steps(1, end) infinite;
+                }
+            `}</style>
 
+            {/* Heading */}
+            <div className="text-center mb-4 sm:mb-6">
+                <h3
+                    className={`text-lg sm:text-xl md:text-2xl font-extrabold transition-transform duration-150 ${
+                        isBlinking ? 'fast-blink text-red-600 scale-105' : 'text-primary scale-100'
+                    }`}
+                >
+                    Quick Register in 10 Seconds
+                </h3>
+
+                {/* Slightly bolder Tamil text */}
+                <div
+                    className={`text-sm sm:text-xs md:text-sm mt-1 font-semibold ${
+                        isBlinking ? 'fast-blink text-red-600' : 'text-gray-700'
+                    }`}
+                >
+                    10 வினாடிகளில் இங்கே விரைவாகப் பதிவு செய்யுங்கள்
+                </div>
+
+                {/* Yellow downward finger icon */}
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="mx-auto mt-2 w-6 h-6 text-yellow-400 animate-bounce"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path d="M12 2C12 1.44772 12.4477 1 13 1C13.5523 1 14 1.44772 14 2V13.5858L16.2929 11.2929C16.6834 10.9024 17.3166 10.9024 17.7071 11.2929C18.0976 11.6834 18.0976 12.3166 17.7071 12.7071L12.7071 17.7071C12.3166 18.0976 11.6834 18.0976 11.2929 17.7071L6.29289 12.7071C5.90237 12.3166 5.90237 11.6834 6.29289 11.2929C6.68342 10.9024 7.31658 10.9024 7.70711 11.2929L10 13.5858V2Z"/>
+                </svg>
+            </div>
+
+            {/* Form */}
             <form className="space-y-3 sm:space-y-4" onSubmit={handleSubmit}>
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Name / பெயர்</label>
-                    <input 
-                        type="text" 
-                        placeholder="Enter Name" 
+                    <input
+                        type="text"
+                        placeholder="Enter Name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base text-black" 
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base text-black"
                         required
                     />
                 </div>
+
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number / தொலைபேசி எண்</label>
-                    <input 
-                        type="tel" 
-                        placeholder="Enter phone number" 
+                    <input
+                        type="tel"
+                        placeholder="Enter phone number"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base text-black" 
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base text-black"
                         required
                     />
                 </div>
+
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Email / மின்னஞ்சல்</label>
-                    <input 
-                        type="email" 
-                        placeholder="Email" 
+                    <input
+                        type="email"
+                        placeholder="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base text-black" 
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base text-black"
                     />
                 </div>
+
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Looking For</label>
-                    <select 
+                    <select
                         value={lookingFor}
                         onChange={(e) => setLookingFor(e.target.value)}
-                        className={`w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base ${lookingFor ? 'text-black' : 'text-gray-400'}`}
+                        className={`w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base ${
+                            lookingFor ? 'text-black' : 'text-gray-400'
+                        }`}
                         required
                     >
-                        <option value="" className="text-gray-400">Choose Type</option>
-                        <option value="Male" className="text-black">Male</option>
-                        <option value="Female" className="text-black">Female</option>
+                        <option value="">Choose Type</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
                     </select>
                 </div>
+
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">This Profile For</label>
-                    <select 
+                    <select
                         value={profileFor}
                         onChange={(e) => setProfileFor(e.target.value)}
-                        className={`w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base ${profileFor ? 'text-black' : 'text-gray-400'}`}
+                        className={`w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base ${
+                            profileFor ? 'text-black' : 'text-gray-400'
+                        }`}
                         required
                     >
-                        <option value="" className="text-gray-400">Choose Type</option>
-                        <option value="For Me" className="text-black">For Me</option>
-                        <option value="For My Son" className="text-black">For My Son</option>
-                        <option value="For My Daughter" className="text-black">For My Daughter</option>
-                        <option value="For My Brother" className="text-black">For My Brother</option>
-                        <option value="For My Sister" className="text-black">For My Sister</option>
-                        <option value="For My Friend" className="text-black">For My Friend</option>
-                        <option value="For My Relative" className="text-black">For My Relative</option>
+                        <option value="">Choose Type</option>
+                        <option value="For Me">For Me</option>
+                        <option value="For My Son">For My Son</option>
+                        <option value="For My Daughter">For My Daughter</option>
+                        <option value="For My Brother">For My Brother</option>
+                        <option value="For My Sister">For My Sister</option>
+                        <option value="For My Friend">For My Friend</option>
+                        <option value="For My Relative">For My Relative</option>
                     </select>
                 </div>
+
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                         Captcha: <span className="bg-primary text-white px-2 py-1 rounded">{captcha}</span>
                     </label>
-                    <input 
-                        type="text" 
-                        placeholder="Enter Captcha / கேப்ட்சாவை உள்ளிடவும்" 
+                    <input
+                        type="text"
+                        placeholder="Enter Captcha / கேப்ட்சாவை உள்ளிடவும்"
                         value={captchaInput}
                         onChange={(e) => setCaptchaInput(e.target.value)}
-                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base text-black" 
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none text-sm sm:text-base text-black"
                         required
                     />
                 </div>
+
                 <div className="flex items-start space-x-2">
-                    <input 
-                        type="checkbox" 
-                        id="terms" 
+                    <input
+                        type="checkbox"
+                        id="terms"
                         checked={isAgreed}
                         onChange={(e) => setIsAgreed(e.target.checked)}
-                        className="h-4 w-4 rounded text-primary focus:ring-primary border-gray-300 mt-1" 
+                        className="h-4 w-4 rounded text-primary focus:ring-primary border-gray-300 mt-1"
                     />
                     <label htmlFor="terms" className="text-sm text-gray-600">
-                        I agree to the Terms and Conditions
+                        I agree to the Terms and Conditions{' '}
                         <span className="text-red-500 cursor-pointer" onClick={() => setShowModal(true)}>
                             click to view
                         </span>
                     </label>
                 </div>
-                <button 
-                    type="submit" 
+
+                <button
+                    type="submit"
                     disabled={loading}
                     className="w-full bg-primary text-white font-bold py-3 sm:py-4 rounded-lg hover:bg-primary-dark transition-transform transform hover:scale-105 shadow-lg disabled:opacity-50 text-sm sm:text-base"
                 >
                     {loading ? 'Registering...' : 'Get Started'}
                 </button>
             </form>
-            
-            {/* Terms Modal */}
-            {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl max-w-4xl max-h-[90vh] overflow-y-auto w-full">
-                        <div className="flex justify-between items-center mb-4 p-4 border-b">
-                            <h3 className="text-xl text-primary font-bold">Terms and Conditions</h3>
-                            <button 
-                                onClick={() => setShowModal(false)} 
-                                className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
-                            >
-                                ✕
-                            </button>
-                        </div>
-                        <div className="p-6">
-                            <h1 className="text-primary text-2xl font-bold mb-4">
-                                Terms and Conditions Governing Membership
-                            </h1>
-                            <p className="text-black mb-2">
-                                [Subject to revision by BMP from time to time]
-                            </p>
-                            <p className="text-black mb-2">
-                                [Applicable for Paid and Free Services]
-                            </p>
-                            <p className="text-black mb-4">
-                                DEAR USER: PLEASE READ THESE TERMS AND CONDITIONS BEFORE REGISTRATION.
-                            </p>
-                            <p className="text-black mb-4">
-                                By registering on{" "}
-                                <span className="text-primary font-semibold">Matrimonial.com</span>, you
-                                explicitly understand and agree that:
-                            </p>
-                            <ul className="text-black mb-4 list-disc pl-6">
-                                <li className="mb-2">
-                                    The minimum age for registering is{" "}
-                                    <span className="text-primary font-semibold">18 years for women</span> and{" "}
-                                    <span className="text-primary font-semibold">21 years for men</span>.
-                                </li>
-                                <li className="mb-2">
-                                    You are not disabled by any law from entering into a contract.
-                                </li>
-                                <li className="mb-2">
-                                    You have gone through the Terms and Conditions and agree to be
-                                    bound by them.
-                                </li>
-                            </ul>
-
-                            <h2 className="text-primary text-xl font-bold mb-3">Conditions of Use:</h2>
-                            <p className="text-black mb-4">
-                                Welcome to{" "}
-                                <span className="text-primary font-semibold">Matrimonial.com</span>.
-                                <span className="text-primary font-semibold">Matrimonial.com</span> and its
-                                affiliates provide their services to you subject to the following
-                                conditions. If you visit or sign up at{" "}
-                                <span className="text-primary font-semibold">Matrimonial.com</span>, you
-                                accept these conditions. Please read them carefully.
-                            </p>
-
-                            <h2 className="text-primary text-xl font-bold mb-3">Privacy:</h2>
-                            <p className="text-black mb-4">
-                                Please review our{" "}
-                                <span className="text-primary font-semibold">Privacy Notice</span>, which also
-                                governs your visit to{" "}
-                                <span className="text-primary font-semibold">Matrimonial.com</span>, to
-                                understand our practices. Members agree that their profile(s) may
-                                be crawled and indexed by search engines, where{" "}
-                                <span className="text-primary font-semibold">Matrimonial.com</span> and its
-                                network does not have any control over the search engines'
-                                behavior.
-                            </p>
-
-                            <h2 className="text-primary text-xl font-bold mb-3">Communications</h2>
-                            <p className="text-black mb-4">
-                                When you visit{" "}
-                                <span className="text-primary font-semibold">Matrimonial.com</span> or send
-                                e-mails to us, you are communicating with us electronically. You
-                                consent to receive communications from us electronically. We will
-                                communicate with you by e-mail or by posting notices on this site.
-                            </p>
-
-                            <h2 className="text-primary text-xl font-bold mb-3">Your Account</h2>
-                            <p className="text-black mb-4">
-                                If you use or register on this site, you are responsible for
-                                maintaining the confidentiality of your account and password and
-                                for restricting access to your computer. You agree to accept
-                                responsibility for all activities that occur under your account or
-                                password.
-                            </p>
-
-                            <h2 className="text-primary text-xl font-bold mb-3">Membership</h2>
-                            <p className="text-black mb-2">
-                                Membership is not automatic: The right of admission is vested with{" "}
-                                <span className="text-primary font-semibold">Matrimonial.com</span>.
-                            </p>
-                            <p className="text-black mb-4">
-                                You become a member upon due acceptance of the Profile/Payment by{" "}
-                                <span className="text-primary font-semibold">Matrimonial.com</span>.
-                            </p>
-                            <ul className="text-black mb-4 list-disc pl-6">
-                                <li className="mb-2">
-                                    Membership is valid for{" "}
-                                    <span className="text-primary font-semibold">45, 90, or 180 days</span> based on
-                                    the plan chosen.
-                                </li>
-                                <li className="mb-2">
-                                    Your membership is personal and cannot be assigned, transferred,
-                                    or licensed to anyone else.
-                                </li>
-                            </ul>
-
-                            <h2 className="text-primary text-xl font-bold mb-3">Online Conduct:</h2>
-                            <p className="text-black mb-4">
-                                You are responsible for the content and information [including
-                                profile and photograph] you post or transmit using{" "}
-                                <span className="text-primary font-semibold">Matrimonial.com's</span>{" "}
-                                services.
-                            </p>
-                            <p className="text-black mb-4">
-                                You will not post or transmit any content that is defamatory,
-                                abusive, obscene, or in violation of the rights of any person,
-                                including intellectual property rights.
-                            </p>
-                        </div>
-                        <div className="p-4 border-t bg-gray-50">
-                            <button 
-                                onClick={() => setShowModal(false)}
-                                className="w-full bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark transition-colors font-semibold"
-                            >
-                                Close 
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };
