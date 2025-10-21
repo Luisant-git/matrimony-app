@@ -13,25 +13,23 @@ import {
   CModal,
   CModalBody,
   CModalHeader,
-  CModalTitle,
   CModalFooter,
 } from '@coreui/react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-import { toast } from 'react-toastify' // Optional, for alert messages
+import { toast } from 'react-toastify'
 import UserDetailsModal from './UserDetailsModal'
+
 function FormList() {
   const [userData, setUserData] = useState([])
   const [filteredData, setFilteredData] = useState([])
-  const [searchQuery, setSearchQuery] = useState('')
-  const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' })
+  const [statusFilter, setStatusFilter] = useState('All')
   const [genderFilter, setGenderFilter] = useState('All')
-
   const [districtFilter, setDistrictFilter] = useState('All')
   const [educationFilter, setEducationFilter] = useState('All')
   const [jobTypeFilter, setJobTypeFilter] = useState('All')
+  const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' })
   const [selectedUser, setSelectedUser] = useState(null)
-  const [refresh, setRefresh] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [deactivateModalVisible, setDeactivateModalVisible] = useState(false)
   const [deactivateReason, setDeactivateReason] = useState('')
@@ -40,28 +38,10 @@ function FormList() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
 
-
-  const getAge = (u) => {
-    const explicit = Number(u?.age)
-    if (!Number.isNaN(explicit) && explicit > 0) return explicit
-
-    const dobStr = u?.dateOfBirth || u?.dob || u?.birthDate
-    if (!dobStr) return null
-
-    const dob = new Date(dobStr)
-    if (isNaN(dob)) return null
-
-    const today = new Date()
-    let age = today.getFullYear() - dob.getFullYear()
-    const m = today.getMonth() - dob.getMonth()
-    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--
-    return age
-  }
-
+  // Fetch all users
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // includeInactive=true so admin can view and reactivate deactivated users
         const response = await fetch(`${import.meta.env.VITE_API_URL}/user/data`)
         const data = await response.json()
         setUserData(data)
@@ -71,110 +51,83 @@ function FormList() {
       }
     }
     fetchData()
-  }, [refresh])
-  const filterData = (
-    searchTerm,
-    gender,
-    district,
-    education,
-    jobType,
-  ) => {
+  }, [])
+
+  // Filter users
+  const filterData = (status, gender, district, education, jobType) => {
     const filtered = userData.filter((user) => {
-      const normalizedSearchTerm = searchTerm.trim().toLowerCase()
-      const normalizedDistrict = district.trim().toLowerCase()
-
-      const matchesSearch =
-        user.fullName.toLowerCase().includes(normalizedSearchTerm) ||
-        user.email.toLowerCase().includes(normalizedSearchTerm) ||
-        user.mobileNo.includes(normalizedSearchTerm)
-
+      const matchesStatus =
+        status === 'All' ||
+        (status === 'Activated' && user.isActive) ||
+        (status === 'Deactivated' && !user.isActive)
       const matchesGender = gender === 'All' || user.gender === gender
       const matchesDistrict =
         district === 'All' ||
-        (user.district && user.district.trim().toLowerCase() === normalizedDistrict)
+        (user.district && user.district.trim().toLowerCase() === district.trim().toLowerCase())
       const matchesEducation = education === 'All' || user.education === education
       const matchesJobType = jobType === 'All' || user.job_type === jobType
 
-      return (
-        matchesSearch &&
-        matchesGender &&
-        matchesDistrict &&
-        matchesEducation &&
-        matchesJobType
-      )
+      return matchesStatus && matchesGender && matchesDistrict && matchesEducation && matchesJobType
     })
-
     setFilteredData(filtered)
     setCurrentPage(1)
   }
 
-  const handleSearch = (e) => {
-    const value = e.target.value
-    setSearchQuery(value)
-    filterData(
-      value,
-      genderFilter,
-      districtFilter,
-      educationFilter,
-      jobTypeFilter,
-    )
-  }
-
+  // Handle filter change
   const handleFilterChange = (filterType, value) => {
-    const normalizedValue = value.trim().toLowerCase()
     switch (filterType) {
+      case 'status':
+        setStatusFilter(value)
+        filterData(value, genderFilter, districtFilter, educationFilter, jobTypeFilter)
+        break
       case 'gender':
         setGenderFilter(value)
-        filterData(searchQuery, value, districtFilter, educationFilter, jobTypeFilter)
+        filterData(statusFilter, value, districtFilter, educationFilter, jobTypeFilter)
         break
       case 'district':
         setDistrictFilter(value)
-        filterData(searchQuery, genderFilter, value, educationFilter, jobTypeFilter)
+        filterData(statusFilter, genderFilter, value, educationFilter, jobTypeFilter)
         break
       case 'education':
         setEducationFilter(value)
-        filterData(searchQuery, genderFilter, districtFilter, value, jobTypeFilter)
+        filterData(statusFilter, genderFilter, districtFilter, value, jobTypeFilter)
         break
       case 'jobType':
         setJobTypeFilter(value)
-        filterData(searchQuery, genderFilter, districtFilter, educationFilter, value)
+        filterData(statusFilter, genderFilter, districtFilter, educationFilter, value)
         break
       default:
         break
     }
   }
 
+  // Sort function
   const handleSort = (key) => {
     let direction = 'asc'
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
       direction = 'desc'
     }
     setSortConfig({ key, direction })
-    const sortedData = [...filteredData].sort((a, b) => {
-      if (direction === 'asc') {
-        return a[key] > b[key] ? 1 : -1
-      } else {
-        return a[key] < b[key] ? 1 : -1
-      }
-    })
-    setFilteredData(sortedData)
-    setCurrentPage(1)
+    const sorted = [...filteredData].sort((a, b) =>
+      direction === 'asc' ? (a[key] > b[key] ? 1 : -1) : a[key] < b[key] ? 1 : -1
+    )
+    setFilteredData(sorted)
   }
 
+  // View details
   const handleViewDetails = (user) => {
     setSelectedUser(user)
     setModalVisible(true)
   }
 
-  const handleDeleteUser = async (userId) => {
-    const endpoint = `${import.meta.env.VITE_API_URL}/user/data/${userId.userId}`
-
+  // Delete user
+  const handleDeleteUser = async (user) => {
     try {
-      const response = await axios.delete(endpoint)
+      const response = await axios.delete(`${import.meta.env.VITE_API_URL}/user/data/${user.userId}`)
       if (response.status === 200) {
         toast.success('User deleted successfully')
-        setRefresh(!refresh)
-        // Optionally, refresh the user list or update the state
+        setUserData(userData.filter((u) => u.userId !== user.userId))
+        filterData(statusFilter, genderFilter, districtFilter, educationFilter, jobTypeFilter)
       } else {
         toast.error('Failed to delete user')
       }
@@ -184,6 +137,7 @@ function FormList() {
     }
   }
 
+  // Activate user by ID
   const handleActivateUser = async (user) => {
     try {
       await axios.patch(`${import.meta.env.VITE_API_URL}/user/data/${user.userId}`, {
@@ -192,30 +146,67 @@ function FormList() {
         deactivatedAt: null,
       })
       toast.success('User activated')
-      setRefresh(!refresh)
+      const updatedUsers = userData.map((u) =>
+        u.userId === user.userId ? { ...u, isActive: true, deactivationReason: null } : u
+      )
+      setUserData(updatedUsers)
+      filterData(statusFilter, genderFilter, districtFilter, educationFilter, jobTypeFilter)
     } catch (err) {
       console.error(err)
       toast.error('Failed to activate user')
     }
   }
 
-  console.log(selectedUser)
+  // Deactivate user by ID
+  const handleDeactivateUser = async () => {
+    if (!userToDeactivate || !deactivateReason) {
+      toast.error('Please select a reason')
+      return
+    }
+    const reasonText = deactivateReason === 'other' ? deactivateOtherText : deactivateReason
+    try {
+      await axios.patch(`${import.meta.env.VITE_API_URL}/user/data/${userToDeactivate.userId}`, {
+        isActive: false,
+        deactivationReason: reasonText,
+      })
+      toast.success('User deactivated')
+      const updatedUsers = userData.map((u) =>
+        u.userId === userToDeactivate.userId
+          ? { ...u, isActive: false, deactivationReason: reasonText }
+          : u
+      )
+      setUserData(updatedUsers)
+      filterData(statusFilter, genderFilter, districtFilter, educationFilter, jobTypeFilter)
+      setDeactivateModalVisible(false)
+      setDeactivateReason('')
+      setDeactivateOtherText('')
+      setUserToDeactivate(null)
+    } catch (err) {
+      console.error(err)
+      toast.error('Failed to deactivate user')
+    }
+  }
 
   return (
     <div>
+      {/* Filters */}
       <CCard>
         <CCardBody>
           <CRow className="justify-content-between">
+            {/* Status Filter */}
             <CCol xs="12" md="6" lg="3">
-              <input
-                type="text"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={handleSearch}
-                className="form-control"
-              />
+              <select
+                className="form-select"
+                value={statusFilter}
+                onChange={(e) => handleFilterChange('status', e.target.value)}
+              >
+                <option value="All">All Users</option>
+                <option value="Activated">Activated</option>
+                <option value="Deactivated">Deactivated</option>
+              </select>
             </CCol>
 
+            {/* Gender Filter */}
             <CCol xs="12" md="6" lg="2">
               <select
                 className="form-select"
@@ -228,11 +219,8 @@ function FormList() {
               </select>
             </CCol>
 
-
-
-
-
-            <CCol xs="12" md="6" lg="2">
+            {/* District Filter */}
+            <CCol xs="12" md="6" lg="3">
               <select
                 className="form-select"
                 value={districtFilter}
@@ -280,6 +268,7 @@ function FormList() {
               </select>
             </CCol>
 
+            {/* Add Button */}
             <CCol xs="6" md="6" lg="1" className="d-flex ms-auto">
               <Link to="/forms/form-control">
                 <button className="btn btn-success text-white w-100">Add</button>
@@ -289,17 +278,18 @@ function FormList() {
         </CCardBody>
       </CCard>
 
+      {/* Table */}
       <CCard className="mt-3">
         <CCardBody>
-          <CTable striped bordered className="mt-3">
+          <CTable striped bordered hover>
             <CTableHead>
               <CTableRow>
                 <th>Avatar</th>
                 <th onClick={() => handleSort('fullName')}>Name</th>
                 <th onClick={() => handleSort('email')}>Email</th>
                 <th onClick={() => handleSort('gender')}>Gender</th>
-
                 <th onClick={() => handleSort('district')}>District</th>
+                <th>Status</th>
                 <th>Actions</th>
               </CTableRow>
             </CTableHead>
@@ -307,90 +297,58 @@ function FormList() {
               {filteredData
                 .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                 .map((user) => (
-                <CTableRow key={user.userId}>
-                  <CTableDataCell>
-                    <img
-                      className="rounded-circle"
-                      width={50}
-                      height={50}
-                      src={user.userProfile[0]}
-                      alt=""
-                    />
-                  </CTableDataCell>
-                  <CTableDataCell>{user.fullName}</CTableDataCell>
-                  <CTableDataCell>{user.email}</CTableDataCell>
-                  <CTableDataCell>{user.gender}</CTableDataCell>
-
-                  <CTableDataCell>{user.district}</CTableDataCell>
-                  <CTableDataCell>
-                    <CButton color="primary" onClick={() => handleViewDetails(user)}>
-                      View Details
-                    </CButton>
-                    <CButton
-                      color="secondary"
-                      className="ms-2"
-                      onClick={() => handleDeleteUser(user)}
-                    >
-                      Delete
-                    </CButton>
-
-                    <Link to={`/forms/update/${user.userId}`}>
-                      <CButton color="secondary" className="ms-2">
-                        Update
+                  <CTableRow key={user.userId}>
+                    <CTableDataCell>
+                      <img
+                        className="rounded-circle"
+                        width={50}
+                        height={50}
+                        src={user.userProfile[0]}
+                        alt=""
+                      />
+                    </CTableDataCell>
+                    <CTableDataCell>{user.fullName}</CTableDataCell>
+                    <CTableDataCell>{user.email}</CTableDataCell>
+                    <CTableDataCell>{user.gender}</CTableDataCell>
+                    <CTableDataCell>{user.district}</CTableDataCell>
+                    <CTableDataCell>{user.isActive ? 'Activated' : 'Deactivated'}</CTableDataCell>
+                    <CTableDataCell>
+                      <CButton color="primary" onClick={() => handleViewDetails(user)}>
+                        View Details
                       </CButton>
-                    </Link>
-                    {user.isActive === false ? (
-                      <CButton
-                        color="success"
-                        className="ms-2"
-                        onClick={() => handleActivateUser(user)}
-                      >
-                        Activate
+                      <CButton color="secondary" className="ms-2" onClick={() => handleDeleteUser(user)}>
+                        Delete
                       </CButton>
-                    ) : (
-                      <CButton
-                        color="danger"
-                        className="ms-2"
-                        onClick={() => {
-                          setUserToDeactivate(user)
-                          setDeactivateModalVisible(true)
-                        }}
-                      >
-                        Deactivate
-                      </CButton>
-                    )}
-                  </CTableDataCell>
-                </CTableRow>
-              ))}
+                      <Link to={`/forms/update/${user.userId}`}>
+                        <CButton color="secondary" className="ms-2">
+                          Update
+                        </CButton>
+                      </Link>
+                      {user.isActive ? (
+                        <CButton
+                          color="danger"
+                          className="ms-2"
+                          onClick={() => {
+                            setUserToDeactivate(user)
+                            setDeactivateModalVisible(true)
+                          }}
+                        >
+                          Deactivate
+                        </CButton>
+                      ) : (
+                        <CButton color="success" className="ms-2" onClick={() => handleActivateUser(user)}>
+                          Activate
+                        </CButton>
+                      )}
+                    </CTableDataCell>
+                  </CTableRow>
+                ))}
             </CTableBody>
           </CTable>
-          
-          {/* Pagination */}
-          <div className="d-flex justify-content-between align-items-center mt-3">
-            <div>
-              Showing {Math.min((currentPage - 1) * itemsPerPage + 1, filteredData.length)} to {Math.min(currentPage * itemsPerPage, filteredData.length)} of {filteredData.length} entries
-            </div>
-            <div>
-              <button 
-                className="btn btn-outline-primary me-2" 
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage(currentPage - 1)}
-              >
-                Previous
-              </button>
-              <span className="me-2">Page {currentPage} of {Math.ceil(filteredData.length / itemsPerPage)}</span>
-              <button 
-                className="btn btn-outline-primary" 
-                disabled={currentPage === Math.ceil(filteredData.length / itemsPerPage)}
-                onClick={() => setCurrentPage(currentPage + 1)}
-              >
-                Next
-              </button>
-            </div>
-          </div>
         </CCardBody>
       </CCard>
 
+      {/* User Details Modal */}
       {selectedUser && (
         <UserDetailsModal
           modalVisible={modalVisible}
@@ -404,60 +362,31 @@ function FormList() {
         <CModalHeader>Deactivate User</CModalHeader>
         <CModalBody>
           <p>Please choose a reason for deactivation:</p>
-          <div className="mb-2">
-            <select
-              className="form-select"
-              value={deactivateReason}
-              onChange={(e) => setDeactivateReason(e.target.value)}
-            >
-              <option value="">Select reason</option>
-              <option value="got_married">Got Married</option>
-              <option value="improper_behavior">Improper Behavior</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
+          <select
+            className="form-select mb-2"
+            value={deactivateReason}
+            onChange={(e) => setDeactivateReason(e.target.value)}
+          >
+            <option value="">Select reason</option>
+            <option value="got_married">Got Married</option>
+            <option value="improper_behavior">Improper Behavior</option>
+            <option value="other">Other</option>
+          </select>
           {deactivateReason === 'other' && (
-            <div className="mb-2">
-              <input
-                className="form-control"
-                placeholder="Specify reason"
-                value={deactivateOtherText}
-                onChange={(e) => setDeactivateOtherText(e.target.value)}
-              />
-            </div>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Specify reason"
+              value={deactivateOtherText}
+              onChange={(e) => setDeactivateOtherText(e.target.value)}
+            />
           )}
         </CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setDeactivateModalVisible(false)}>
             Cancel
           </CButton>
-          <CButton
-            color="danger"
-            onClick={async () => {
-              if (!userToDeactivate) return
-              if (!deactivateReason) {
-                toast.error('Please select a reason')
-                return
-              }
-              const reasonText =
-                deactivateReason === 'other' ? deactivateOtherText : deactivateReason
-              try {
-                await axios.patch(
-                  `${import.meta.env.VITE_API_URL}/user/data/${userToDeactivate.userId}`,
-                  { isActive: false, deactivationReason: reasonText },
-                )
-                toast.success('User deactivated')
-                setDeactivateModalVisible(false)
-                setDeactivateReason('')
-                setDeactivateOtherText('')
-                setUserToDeactivate(null)
-                setRefresh(!refresh)
-              } catch (err) {
-                console.error(err)
-                toast.error('Failed to deactivate user')
-              }
-            }}
-          >
+          <CButton color="danger" onClick={handleDeactivateUser}>
             Confirm
           </CButton>
         </CModalFooter>
@@ -466,4 +395,4 @@ function FormList() {
   )
 }
 
-export default FormList
+export default FormList;
