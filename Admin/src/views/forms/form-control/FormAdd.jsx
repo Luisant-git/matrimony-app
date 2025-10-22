@@ -11,12 +11,12 @@ import {
   CListGroup,
   CListGroupItem,
   CProgress,
-  CAccordion,
-  CAccordionBody,
-  CAccordionHeader,
-  CAccordionItem,
 } from '@coreui/react'
 import React, { useState, useMemo } from 'react'
+import Accordion from '@mui/material/Accordion'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ModalCommunity from './ModalCommunity'
 import CatesModal from './CatesModal'
 import ModalSubCaste from './ModalSubCaste'
@@ -57,7 +57,6 @@ function FormAdd({
   const [kulamModal, setKulamModal] = useState(false)
   const [kothiramModal, setKothirammModal] = useState(false)
   const [manageModal, setManageModal] = useState({ visible: false, type: '', data: [], parentData: [] })
-
   const progressPercentage = useMemo(() => {
     const requiredFields = [
       'fullName', 'mobileNo', 'email', 'gender', 'dateOfBirth', 'birthTime', 'birthPlace',
@@ -82,12 +81,16 @@ function FormAdd({
         </CCardHeader>
         <CCardBody>
           <CForm onSubmit={handleSubmit}>
-            <CAccordion className="mb-3">
-              <CAccordionItem itemKey="personal">
-                <CAccordionHeader>
-                  Personal Details / தனிப்பட்ட விவரங்கள்
-                </CAccordionHeader>
-                <CAccordionBody>
+            <Accordion defaultExpanded className="mb-3">
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="personal-content"
+                id="personal-header"
+                className="section-heading"
+              >
+                Personal Details / தனிப்பட்ட விவரங்கள்
+              </AccordionSummary>
+              <AccordionDetails>
               <div className="row g-3">
                 <div className="col-md-6">
                   <CFormLabel htmlFor="fullName">Full Name</CFormLabel>
@@ -130,17 +133,17 @@ function FormAdd({
 
                 <div className="col-md-6">
                   <CFormLabel htmlFor="gender">Gender</CFormLabel>
-                  <select
+                  <CFormSelect
                     name="gender"
                     value={formData.gender}
                     required
                     onChange={handleChange}
                     id="gender"
-                    className="form-control"
                   >
+                    <option value="">Select your gender</option>
                     <option value="MALE">Male</option>
                     <option value="FEMALE">Female</option>
-                  </select>
+                  </CFormSelect>
                 </div>
 
                 <div className="col-md-6">
@@ -157,16 +160,20 @@ function FormAdd({
                 </div>
 
                 <div className="col-md-6">
-                  <CFormLabel htmlFor="birthTime">Birth Time</CFormLabel>
-                  <CFormInput
-                    name="birthTime"
-                    value={formData.birthTime}
+                  <CFormLabel htmlFor="maritalStatus">Marital Status</CFormLabel>
+                  <CFormSelect
+                    name="maritalStatus"
+                    value={formData.maritalStatus || ""}
                     onChange={handleChange}
                     required
-                    type="time"
-                    id="birthTime"
-                    placeholder="Enter your birth time"
-                  />
+                    id="maritalStatus"
+                  >
+                    <option value="">Select Marital Status</option>
+                    <option value="SINGLE">Single</option>
+                    <option value="MARRIED">Married</option>
+                    <option value="DIVORCED">Divorced</option>
+                    <option value="OTHERS">Others</option>
+                  </CFormSelect>
                 </div>
 
                 <div className="col-md-6">
@@ -183,20 +190,16 @@ function FormAdd({
                 </div>
 
                 <div className="col-md-6">
-                  <CFormLabel htmlFor="maritalStatus">Marital Status</CFormLabel>
-                  <select
-                    name="maritalStatus"
-                    value={formData.maritalStatus}
+                  <CFormLabel htmlFor="birthTime">Birth Time</CFormLabel>
+                  <CFormInput
+                    name="birthTime"
+                    value={formData.birthTime}
                     onChange={handleChange}
                     required
-                    id="maritalStatus"
-                    className="form-control"
-                  >
-                    <option value="SINGLE">Single</option>
-                    <option value="MARRIED">Married</option>
-                    <option value="DIVORCED">Divorced</option>
-                    <option value="OTHERS">Others</option>
-                  </select>
+                    type="time"
+                    id="birthTime"
+                    placeholder="Enter your birth time"
+                  />
                 </div>
 
                 <div className="col-md-6">
@@ -288,15 +291,13 @@ function FormAdd({
                   )}
                 </div>
               </div>
-                </CAccordionBody>
-              </CAccordionItem>
-            </CAccordion>
-            <CAccordion className="mb-3">
-              <CAccordionItem itemKey="education">
-                <CAccordionHeader>
-                  Education Details
-                </CAccordionHeader>
-                <CAccordionBody>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion className="mb-3">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                Education Details
+              </AccordionSummary>
+              <AccordionDetails>
             <div className="mb-3">
               <CFormLabel htmlFor="caste">Education</CFormLabel>
               <CFormTextarea
@@ -310,15 +311,13 @@ function FormAdd({
               />
             </div>
 
-                </CAccordionBody>
-              </CAccordionItem>
-            </CAccordion>
-            <CAccordion className="mb-3">
-              <CAccordionItem itemKey="job">
-                <CAccordionHeader>
-                  Job Details
-                </CAccordionHeader>
-                <CAccordionBody>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion className="mb-3">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                Job Details
+              </AccordionSummary>
+              <AccordionDetails>
             <div className="mb-3">
               <CFormLabel htmlFor="organization">Type Of Job</CFormLabel>
               <CFormSelect
@@ -376,39 +375,35 @@ function FormAdd({
 
             {/* (Marital status moved to Personal Details) */}
 
-                </CAccordionBody>
-              </CAccordionItem>
-            </CAccordion>
-            <CAccordion className="mb-3">
-              <CAccordionItem itemKey="property">
-                <CAccordionHeader>
-                  Property Details
-                </CAccordionHeader>
-                <CAccordionBody>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion className="mb-3">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                Property Details
+              </AccordionSummary>
+              <AccordionDetails>
             {/* Own House */}
             <div className="mb-3">
               <CFormLabel htmlFor="ownHouse">Own House</CFormLabel>
-              <select
+              <CFormSelect
                 name="ownHouse"
-                value={formData.ownHouse}
+                value={formData.ownHouse || ""}
                 onChange={handleChange}
                 required
                 id="ownHouse"
-                className="form-control"
               >
+                <option value="">Select an option</option>
                 <option value="true">Yes</option>
                 <option value="false">No</option>
-              </select>
+              </CFormSelect>
             </div>
-                </CAccordionBody>
-              </CAccordionItem>
-            </CAccordion>
-            <CAccordion className="mb-3">
-              <CAccordionItem itemKey="caste">
-                <CAccordionHeader>
-                  Caste Details
-                </CAccordionHeader>
-                <CAccordionBody>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion className="mb-3">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                Caste Details
+              </AccordionSummary>
+              <AccordionDetails>
             <CFormLabel htmlFor="organization">Community</CFormLabel>
             <div className="mb-3 d-flex align-item-center justify-content-between gap-2">
               <CFormSelect
@@ -568,15 +563,13 @@ function FormAdd({
               </div>
             </div>
 
-                </CAccordionBody>
-              </CAccordionItem>
-            </CAccordion>
-            <CAccordion className="mb-3">
-              <CAccordionItem itemKey="contact">
-                <CAccordionHeader>
-                  Contact Details / தொடர்பு விவரங்கள்
-                </CAccordionHeader>
-                <CAccordionBody>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion className="mb-3">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                Contact Details / தொடர்பு விவரங்கள்
+              </AccordionSummary>
+              <AccordionDetails>
               <div className="row g-3">
                 <div className="col-md-6">
                   <CFormLabel htmlFor="address">Address</CFormLabel>
@@ -656,24 +649,27 @@ function FormAdd({
 
                 <div className="col-md-6">
                   <CFormLabel htmlFor="state">State</CFormLabel>
-                  <CFormInput
+                  <CFormSelect
                     name="state"
-                    value="Tamil Nadu"
-                    disabled
-                    type="text"
+                    value={formData.state}
+                    onChange={handleChange}
+                    required
                     id="state"
-                  />
+                  >
+                    <option value="">Select State</option>
+                    {indianStates.map((state) => (
+                      <option key={state} value={state}>{state}</option>
+                    ))}
+                  </CFormSelect>
                 </div>
               </div>
-                </CAccordionBody>
-              </CAccordionItem>
-            </CAccordion>
-            <CAccordion className="mb-3">
-              <CAccordionItem itemKey="family">
-                <CAccordionHeader>
-                  Family Details
-                </CAccordionHeader>
-                <CAccordionBody>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion className="mb-3">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                Family Details
+              </AccordionSummary>
+              <AccordionDetails>
             <CCard>
               <CCardHeader>
                 <h5>Siblings List</h5>
@@ -710,17 +706,15 @@ function FormAdd({
                 )}
               </CCardBody>
             </CCard>
-                </CAccordionBody>
-              </CAccordionItem>
-            </CAccordion>
+              </AccordionDetails>
+            </Accordion>
 
             {/* Jathagam moved out as its own top-level accordion */}
-            <CAccordion className="mb-3">
-              <CAccordionItem itemKey="jathagam">
-                <CAccordionHeader>
-                  Jathagam Details / ஜாதகம் விவரங்கள்
-                </CAccordionHeader>
-                <CAccordionBody>
+            <Accordion className="mb-3">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                Jathagam Details / ஜாதகம் விவரங்கள்
+              </AccordionSummary>
+              <AccordionDetails>
                 <CCard className="jathagam-card">
                   <CCardHeader>
                     {!jathagam && (
@@ -764,9 +758,8 @@ function FormAdd({
                     )}
                   </CCardBody>
                 </CCard>
-                </CAccordionBody>
-              </CAccordionItem>
-            </CAccordion>
+              </AccordionDetails>
+            </Accordion>
             {/* Submit Button */}
             <div className="mb-3 mt-3">
               <CButton color="primary" type="submit">
