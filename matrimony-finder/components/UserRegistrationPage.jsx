@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -10,7 +10,7 @@ const UserRegistrationPage = ({ onNavigateToLogin }) => {
         email: '',
         password: '',
         confirmPassword: '',
-        gender: 'MALE',
+        gender: '',
         dateOfBirth: '',
         birthTime: '',
         birthPlace: '',
@@ -18,12 +18,12 @@ const UserRegistrationPage = ({ onNavigateToLogin }) => {
         job_type: '',
         job: '',
         organization: '',
-        height: '',
+        height: '', // This field is missing from the progress calculation
         weight: '',
         color: '',
         income: '',
-        maritalStatus: 'SINGLE',
-        ownHouse: 'true',
+        maritalStatus: '',
+        ownHouse: '',
         communityId: '',
         casteId: '',
         subCasteId: '',
@@ -184,7 +184,7 @@ const UserRegistrationPage = ({ onNavigateToLogin }) => {
                 // Reset form
                 setFormData({
                     fullName: '', mobileNo: '', email: '', password: '', confirmPassword: '',
-                    gender: 'MALE', dateOfBirth: '', birthTime: '', birthPlace: '',
+                    gender: '', dateOfBirth: '', birthTime: '', birthPlace: '',
                     education: '', job_type: '', job: '', organization: '',
                     height: '', weight: '', color: '', income: '',
                     maritalStatus: 'SINGLE', ownHouse: 'true',
@@ -217,11 +217,30 @@ const UserRegistrationPage = ({ onNavigateToLogin }) => {
         filteredSubCastesLength: filteredSubCastes.length
     });
 
+    const progressPercentage = useMemo(() => {
+        const requiredFields = [
+            'fullName', 'mobileNo', 'email', 'password', 'confirmPassword', 'gender', 'dateOfBirth',
+            'birthTime', 'birthPlace', 'education', 'job_type', 'job', 'organization', 'height',
+            'weight', 'color', 'income', 'maritalStatus', 'ownHouse', 'communityId', 'casteId',
+            'address', 'district'
+        ];
+        const filledFields = requiredFields.filter(field => formData[field] && formData[field] !== '');
+        return Math.round((filledFields.length / requiredFields.length) * 100);
+    }, [formData]);
+
     return (
         <div className="min-h-screen bg-gray-50 py-8">
             <div className="max-w-xl mx-auto px-4">
                 <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8">
-                    <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6">Matrimony Registration Form</h2>
+                    <div className="text-center mb-6">
+                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">Matrimony Registration Form</h2>
+                        <div className="mt-2">
+                            <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                <div className="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style={{ width: `${progressPercentage}%` }}></div>
+                            </div>
+                            <p className="text-sm text-gray-600 mt-1">{progressPercentage}% Complete</p>
+                        </div>
+                    </div>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         {/* Personal Details */}
@@ -277,10 +296,11 @@ const UserRegistrationPage = ({ onNavigateToLogin }) => {
                                         <select
                                             name="gender"
                                             value={formData.gender}
-                                            onChange={handleChange}
+                                            onChange={handleChange}                                            
                                             required
                                             className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary"
                                         >
+                                            <option value="" disabled>Select Gender</option>
                                             <option value="MALE">Male</option>
                                             <option value="FEMALE">Female</option>
                                         </select>
@@ -346,8 +366,14 @@ const UserRegistrationPage = ({ onNavigateToLogin }) => {
                             <AccordionDetails>
                                 <div className="grid md:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Marital Status *</label>
-                                        <select name="maritalStatus" value={formData.maritalStatus} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary">
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">Marital Status *</label>                                        <select
+                                            name="maritalStatus"
+                                            value={formData.maritalStatus}
+                                            onChange={handleChange}
+                                            required
+                                            className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary"
+                                        >
+                                            <option value="" disabled>Select Marital Status</option>
                                             <option value="SINGLE">Single</option>
                                             <option value="MARRIED">Married</option>
                                             <option value="DIVORCED">Divorced</option>
@@ -357,7 +383,14 @@ const UserRegistrationPage = ({ onNavigateToLogin }) => {
 
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-2">Own House *</label>
-                                        <select name="ownHouse" value={formData.ownHouse} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary">
+                                        <select
+                                            name="ownHouse"
+                                            value={formData.ownHouse}
+                                            onChange={handleChange}
+                                            required
+                                            className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary"
+                                        >
+                                            <option value="" disabled>Select an option</option>
                                             <option value="true">Yes</option>
                                             <option value="false">No</option>
                                         </select>
