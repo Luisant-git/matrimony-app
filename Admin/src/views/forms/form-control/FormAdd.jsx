@@ -10,12 +10,13 @@ import {
   CFormTextarea,
   CListGroup,
   CListGroupItem,
+  CProgress,
+  CAccordion,
+  CAccordionBody,
+  CAccordionHeader,
+  CAccordionItem,
 } from '@coreui/react'
-import React, { useState } from 'react'
-import Accordion from '@mui/material/Accordion'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import AccordionDetails from '@mui/material/AccordionDetails'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import React, { useState, useMemo } from 'react'
 import ModalCommunity from './ModalCommunity'
 import CatesModal from './CatesModal'
 import ModalSubCaste from './ModalSubCaste'
@@ -57,25 +58,36 @@ function FormAdd({
   const [kothiramModal, setKothirammModal] = useState(false)
   const [manageModal, setManageModal] = useState({ visible: false, type: '', data: [], parentData: [] })
 
+  const progressPercentage = useMemo(() => {
+    const requiredFields = [
+      'fullName', 'mobileNo', 'email', 'gender', 'dateOfBirth', 'birthTime', 'birthPlace',
+      'maritalStatus', 'height', 'weight', 'color', 'education', 'job_type', 'job',
+      'organization', 'income', 'ownHouse', 'communityId', 'casteId', 'subCasteId',
+      'kulamId', 'kothiramId', 'address', 'district'
+    ]
+    const filledFields = requiredFields.filter(field => formData[field] && formData[field] !== '')
+    return Math.round((filledFields.length / requiredFields.length) * 100)
+  }, [formData])
+
   return (
     <div className="d-flex justify-content-center">
       <div className="w-100" style={{ maxWidth: 900 }}>
         <CCard className="mb-4">
         <CCardHeader>
-          <strong>Profile Form</strong>
+          <div className="d-flex justify-content-between align-items-center">
+            <strong>Profile Form</strong>
+            <small className="text-muted">{progressPercentage}% Complete</small>
+          </div>
+          <CProgress value={progressPercentage} className="mt-2" />
         </CCardHeader>
         <CCardBody>
           <CForm onSubmit={handleSubmit}>
-            <Accordion defaultExpanded className="mb-3">
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="personal-content"
-                id="personal-header"
-                className="section-heading"
-              >
-                Personal Details / தனிப்பட்ட விவரங்கள்
-              </AccordionSummary>
-              <AccordionDetails>
+            <CAccordion className="mb-3">
+              <CAccordionItem itemKey="personal">
+                <CAccordionHeader>
+                  Personal Details / தனிப்பட்ட விவரங்கள்
+                </CAccordionHeader>
+                <CAccordionBody>
               <div className="row g-3">
                 <div className="col-md-6">
                   <CFormLabel htmlFor="fullName">Full Name</CFormLabel>
@@ -276,13 +288,15 @@ function FormAdd({
                   )}
                 </div>
               </div>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion className="mb-3">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                Education Details
-              </AccordionSummary>
-              <AccordionDetails>
+                </CAccordionBody>
+              </CAccordionItem>
+            </CAccordion>
+            <CAccordion className="mb-3">
+              <CAccordionItem itemKey="education">
+                <CAccordionHeader>
+                  Education Details
+                </CAccordionHeader>
+                <CAccordionBody>
             <div className="mb-3">
               <CFormLabel htmlFor="caste">Education</CFormLabel>
               <CFormTextarea
@@ -296,13 +310,15 @@ function FormAdd({
               />
             </div>
 
-              </AccordionDetails>
-            </Accordion>
-            <Accordion className="mb-3">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                Job Details
-              </AccordionSummary>
-              <AccordionDetails>
+                </CAccordionBody>
+              </CAccordionItem>
+            </CAccordion>
+            <CAccordion className="mb-3">
+              <CAccordionItem itemKey="job">
+                <CAccordionHeader>
+                  Job Details
+                </CAccordionHeader>
+                <CAccordionBody>
             <div className="mb-3">
               <CFormLabel htmlFor="organization">Type Of Job</CFormLabel>
               <CFormSelect
@@ -360,13 +376,15 @@ function FormAdd({
 
             {/* (Marital status moved to Personal Details) */}
 
-              </AccordionDetails>
-            </Accordion>
-            <Accordion className="mb-3">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                Property Details
-              </AccordionSummary>
-              <AccordionDetails>
+                </CAccordionBody>
+              </CAccordionItem>
+            </CAccordion>
+            <CAccordion className="mb-3">
+              <CAccordionItem itemKey="property">
+                <CAccordionHeader>
+                  Property Details
+                </CAccordionHeader>
+                <CAccordionBody>
             {/* Own House */}
             <div className="mb-3">
               <CFormLabel htmlFor="ownHouse">Own House</CFormLabel>
@@ -382,13 +400,15 @@ function FormAdd({
                 <option value="false">No</option>
               </select>
             </div>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion className="mb-3">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                Caste Details
-              </AccordionSummary>
-              <AccordionDetails>
+                </CAccordionBody>
+              </CAccordionItem>
+            </CAccordion>
+            <CAccordion className="mb-3">
+              <CAccordionItem itemKey="caste">
+                <CAccordionHeader>
+                  Caste Details
+                </CAccordionHeader>
+                <CAccordionBody>
             <CFormLabel htmlFor="organization">Community</CFormLabel>
             <div className="mb-3 d-flex align-item-center justify-content-between gap-2">
               <CFormSelect
@@ -548,13 +568,15 @@ function FormAdd({
               </div>
             </div>
 
-              </AccordionDetails>
-            </Accordion>
-            <Accordion className="mb-3">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                Contact Details / தொடர்பு விவரங்கள்
-              </AccordionSummary>
-              <AccordionDetails>
+                </CAccordionBody>
+              </CAccordionItem>
+            </CAccordion>
+            <CAccordion className="mb-3">
+              <CAccordionItem itemKey="contact">
+                <CAccordionHeader>
+                  Contact Details / தொடர்பு விவரங்கள்
+                </CAccordionHeader>
+                <CAccordionBody>
               <div className="row g-3">
                 <div className="col-md-6">
                   <CFormLabel htmlFor="address">Address</CFormLabel>
@@ -643,13 +665,15 @@ function FormAdd({
                   />
                 </div>
               </div>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion className="mb-3">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                Family Details
-              </AccordionSummary>
-              <AccordionDetails>
+                </CAccordionBody>
+              </CAccordionItem>
+            </CAccordion>
+            <CAccordion className="mb-3">
+              <CAccordionItem itemKey="family">
+                <CAccordionHeader>
+                  Family Details
+                </CAccordionHeader>
+                <CAccordionBody>
             <CCard>
               <CCardHeader>
                 <h5>Siblings List</h5>
@@ -686,15 +710,17 @@ function FormAdd({
                 )}
               </CCardBody>
             </CCard>
-              </AccordionDetails>
-            </Accordion>
+                </CAccordionBody>
+              </CAccordionItem>
+            </CAccordion>
 
             {/* Jathagam moved out as its own top-level accordion */}
-            <Accordion className="mb-3">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                Jathagam Details / ஜாதகம் விவரங்கள்
-              </AccordionSummary>
-              <AccordionDetails>
+            <CAccordion className="mb-3">
+              <CAccordionItem itemKey="jathagam">
+                <CAccordionHeader>
+                  Jathagam Details / ஜாதகம் விவரங்கள்
+                </CAccordionHeader>
+                <CAccordionBody>
                 <CCard className="jathagam-card">
                   <CCardHeader>
                     {!jathagam && (
@@ -738,8 +764,9 @@ function FormAdd({
                     )}
                   </CCardBody>
                 </CCard>
-              </AccordionDetails>
-            </Accordion>
+                </CAccordionBody>
+              </CAccordionItem>
+            </CAccordion>
             {/* Submit Button */}
             <div className="mb-3 mt-3">
               <CButton color="primary" type="submit">
