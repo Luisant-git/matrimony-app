@@ -185,9 +185,9 @@ const UserRegistrationPage = ({ onNavigateToLogin }) => {
                 setFormData({
                     fullName: '', mobileNo: '', email: '', password: '', confirmPassword: '',
                     gender: '', dateOfBirth: '', birthTime: '', birthPlace: '',
-                    education: '', job_type: '', job: '', organization: '',
+                    education: '', job_type: '', job: '', organization: '', 
                     height: '', weight: '', color: '', income: '',
-                    maritalStatus: 'SINGLE', ownHouse: 'true',
+                    maritalStatus: '', ownHouse: '',
                     communityId: '', casteId: '', subCasteId: '', kulamId: '', kothiramId: '',
                     address: '', district: '', state: 'Tamil Nadu'
                 });
