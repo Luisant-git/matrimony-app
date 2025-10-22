@@ -18,7 +18,11 @@ import {
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import UserDetailsModal from './UserDetailsModal'
+
+// ✅ Initialize ToastContainer (if not in App.jsx)
+import { ToastContainer } from 'react-toastify';
 
 function FormList() {
   const [userData, setUserData] = useState([])
@@ -38,22 +42,22 @@ function FormList() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
 
-  // Fetch all users
+  // ✅ Fetch all users
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/user/data`)
-        const data = await response.json()
-        setUserData(data)
-        setFilteredData(data)
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/user/data`)
+        setUserData(response.data)
+        setFilteredData(response.data)
       } catch (error) {
-        console.error('Error fetching user data: ', error)
+        console.error('Error fetching user data:', error)
+        toast.error('Failed to fetch user data')
       }
     }
     fetchData()
   }, [])
 
-  // Filter users
+  // ✅ Filter users
   const filterData = (status, gender, district, education, jobType) => {
     const filtered = userData.filter((user) => {
       const matchesStatus =
@@ -73,7 +77,6 @@ function FormList() {
     setCurrentPage(1)
   }
 
-  // Handle filter change
   const handleFilterChange = (filterType, value) => {
     switch (filterType) {
       case 'status':
@@ -101,7 +104,7 @@ function FormList() {
     }
   }
 
-  // Sort function
+  // ✅ Sorting
   const handleSort = (key) => {
     let direction = 'asc'
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -114,22 +117,31 @@ function FormList() {
     setFilteredData(sorted)
   }
 
-  // View details
+  // ✅ View Details
   const handleViewDetails = (user) => {
     setSelectedUser(user)
     setModalVisible(true)
   }
 
-  // Delete user
+  // ✅ Delete user (with Toast messages)
   const handleDeleteUser = async (user) => {
+    const confirmDelete = window.confirm(`Are you sure you want to delete ${user.fullName}?`)
+    if (!confirmDelete) {
+      toast.info('User deletion canceled')
+      return
+    }
+
     try {
       const response = await axios.delete(`${import.meta.env.VITE_API_URL}/user/data/${user.userId}`)
-      if (response.status === 200) {
-        toast.success('User deleted successfully')
-        setUserData(userData.filter((u) => u.userId !== user.userId))
-        filterData(statusFilter, genderFilter, districtFilter, educationFilter, jobTypeFilter)
+      if (response.status === 200 || response.status === 204) {
+        toast.success(`${user.fullName} User deleted successfully`, { position: 'top-right' })
+
+        // Remove user from state
+        const updated = userData.filter((u) => u.userId !== user.userId)
+        setUserData(updated)
+        setFilteredData(updated)
       } else {
-        toast.error('Failed to delete user')
+        toast.error('Failed to delete user.')
       }
     } catch (error) {
       console.error('Error deleting user:', error)
@@ -137,7 +149,7 @@ function FormList() {
     }
   }
 
-  // Activate user by ID
+  // ✅ Activate user
   const handleActivateUser = async (user) => {
     try {
       await axios.patch(`${import.meta.env.VITE_API_URL}/user/data/${user.userId}`, {
@@ -145,7 +157,7 @@ function FormList() {
         deactivationReason: null,
         deactivatedAt: null,
       })
-      toast.success('User activated')
+      toast.success('User activated successfully')
       const updatedUsers = userData.map((u) =>
         u.userId === user.userId ? { ...u, isActive: true, deactivationReason: null } : u
       )
@@ -157,7 +169,7 @@ function FormList() {
     }
   }
 
-  // Deactivate user by ID
+  // ✅ Deactivate user
   const handleDeactivateUser = async () => {
     if (!userToDeactivate || !deactivateReason) {
       toast.error('Please select a reason')
@@ -169,7 +181,7 @@ function FormList() {
         isActive: false,
         deactivationReason: reasonText,
       })
-      toast.success('User deactivated')
+      toast.success('User deactivated successfully')
       const updatedUsers = userData.map((u) =>
         u.userId === userToDeactivate.userId
           ? { ...u, isActive: false, deactivationReason: reasonText }
@@ -189,6 +201,8 @@ function FormList() {
 
   return (
     <div>
+      <ToastContainer autoClose={2500} />
+
       {/* Filters */}
       <CCard>
         <CCardBody>
@@ -227,44 +241,9 @@ function FormList() {
                 onChange={(e) => handleFilterChange('district', e.target.value)}
               >
                 <option value="All">All Districts</option>
-                <option value="Ariyalur">Ariyalur</option>
-                <option value="Chengalpattu">Chengalpattu</option>
                 <option value="Chennai">Chennai</option>
                 <option value="Coimbatore">Coimbatore</option>
-                <option value="Cuddalore">Cuddalore</option>
-                <option value="Dharmapuri">Dharmapuri</option>
-                <option value="Dindigul">Dindigul</option>
-                <option value="Erode">Erode</option>
-                <option value="Kallakurichi">Kallakurichi</option>
-                <option value="Kanchipuram">Kanchipuram</option>
-                <option value="Kanyakumari">Kanyakumari</option>
-                <option value="Karur">Karur</option>
-                <option value="Krishnagiri">Krishnagiri</option>
                 <option value="Madurai">Madurai</option>
-                <option value="Mayiladuthurai">Mayiladuthurai</option>
-                <option value="Nagapattinam">Nagapattinam</option>
-                <option value="Namakkal">Namakkal</option>
-                <option value="Nilgiris">Nilgiris</option>
-                <option value="Perambalur">Perambalur</option>
-                <option value="Pudukkottai">Pudukkottai</option>
-                <option value="Ramanathapuram">Ramanathapuram</option>
-                <option value="Ranipet">Ranipet</option>
-                <option value="Salem">Salem</option>
-                <option value="Sivaganga">Sivaganga</option>
-                <option value="Tenkasi">Tenkasi</option>
-                <option value="Thanjavur">Thanjavur</option>
-                <option value="Theni">Theni</option>
-                <option value="Thiruvallur">Thiruvallur</option>
-                <option value="Thiruvarur">Thiruvarur</option>
-                <option value="Thoothukudi">Thoothukudi</option>
-                <option value="Tiruchirappalli">Tiruchirappalli</option>
-                <option value="Tirunelveli">Tirunelveli</option>
-                <option value="Tirupathur">Tirupathur</option>
-                <option value="Tiruppur">Tiruppur</option>
-                <option value="Tiruvannamalai">Tiruvannamalai</option>
-                <option value="Vellore">Vellore</option>
-                <option value="Viluppuram">Viluppuram</option>
-                <option value="Virudhunagar">Virudhunagar</option>
               </select>
             </CCol>
 
@@ -303,7 +282,7 @@ function FormList() {
                         className="rounded-circle"
                         width={50}
                         height={50}
-                        src={user.userProfile[0]}
+                        src={user.userProfile?.[0] || '/default-avatar.png'}
                         alt=""
                       />
                     </CTableDataCell>
@@ -311,12 +290,14 @@ function FormList() {
                     <CTableDataCell>{user.email}</CTableDataCell>
                     <CTableDataCell>{user.gender}</CTableDataCell>
                     <CTableDataCell>{user.district}</CTableDataCell>
-                    <CTableDataCell>{user.isActive ? 'Activated' : 'Deactivated'}</CTableDataCell>
+                    <CTableDataCell>
+                      {user.isActive ? 'Activated' : 'Deactivated'}
+                    </CTableDataCell>
                     <CTableDataCell>
                       <CButton color="primary" onClick={() => handleViewDetails(user)}>
-                        View Details
+                        View
                       </CButton>
-                      <CButton color="secondary" className="ms-2" onClick={() => handleDeleteUser(user)}>
+                      <CButton color="danger" className="ms-2" onClick={() => handleDeleteUser(user)}>
                         Delete
                       </CButton>
                       <Link to={`/forms/update/${user.userId}`}>
@@ -326,7 +307,7 @@ function FormList() {
                       </Link>
                       {user.isActive ? (
                         <CButton
-                          color="danger"
+                          color="warning"
                           className="ms-2"
                           onClick={() => {
                             setUserToDeactivate(user)
@@ -336,7 +317,11 @@ function FormList() {
                           Deactivate
                         </CButton>
                       ) : (
-                        <CButton color="success" className="ms-2" onClick={() => handleActivateUser(user)}>
+                        <CButton
+                          color="success"
+                          className="ms-2"
+                          onClick={() => handleActivateUser(user)}
+                        >
                           Activate
                         </CButton>
                       )}
@@ -395,4 +380,4 @@ function FormList() {
   )
 }
 
-export default FormList;
+export default FormList
